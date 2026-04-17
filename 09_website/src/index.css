@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-slate-950 text-slate-100 antialiased;
+  }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { @apply bg-slate-900; }
+  ::-webkit-scrollbar-thumb { @apply bg-slate-700 rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-slate-600; }
+}
+
+@layer utilities {
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-amber-400;
+  }
+  .card {
+    @apply bg-slate-900 border border-slate-800 rounded-xl;
+  }
+  .placeholder-badge {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide bg-amber-900/40 text-amber-400 border border-amber-700/40 rounded;
+  }
+}
