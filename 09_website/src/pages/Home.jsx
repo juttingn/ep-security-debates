@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowRight, Database, Layers, Shield, MessageSquare, Brain, Search, Globe } from 'lucide-react'
+import { ArrowRight, Database, Layers, Shield, Globe } from 'lucide-react'
 
 function AnimatedCounter({ target, suffix = '', duration = 1800 }) {
   const [val, setVal] = useState(0)
@@ -20,25 +20,23 @@ function AnimatedCounter({ target, suffix = '', duration = 1800 }) {
 }
 
 const STATS = [
-  { label: 'Plenary speeches',   target: 487000, suffix: '+', color: 'text-blue-400' },
-  { label: 'MEPs covered',       target: 3200,   suffix: '',  color: 'text-amber-400' },
-  { label: 'Security-flagged',   target: 42000,  suffix: '+', color: 'text-red-400' },
-  { label: 'Years of debates',   target: 32,     suffix: '',  color: 'text-emerald-400' },
+  { label: 'Security paragraphs',  target: 37201,  suffix: '',   color: 'text-blue-400' },
+  { label: 'Security frames',      target: 13,     suffix: '',   color: 'text-amber-400' },
+  { label: 'Countries represented',target: 28,     suffix: '',   color: 'text-red-400' },
+  { label: 'Years covered (EP9–10)',target: 7,      suffix: '',   color: 'text-emerald-400' },
 ]
 
 const PIPELINE = [
-  { step: '01', icon: Globe,          label: 'Scraping',        desc: 'Full EP plenary verbatim records 1994–2026 via scrapy',                          to: '/corpus' },
-  { step: '02', icon: Database,       label: 'Corpus Prep',     desc: 'Speaker classification, deduplication, language detection',                      to: '/corpus' },
-  { step: '03', icon: Layers,         label: 'Topic Clusters',  desc: 'BERTopic inductive clustering (EN + multilingual) to validate security frames',  to: '/topics' },
-  { step: '04', icon: Shield,         label: 'Frame Detection', desc: 'Paragraph-level zero-shot NLI classification into 13 security frames',           to: '/security' },
-  { step: '05', icon: MessageSquare,  label: 'Sentiment',       desc: 'VADER compound scores across frames, parties and time',                          to: '/sentiment' },
-  { step: '06', icon: Brain,          label: 'LLM Annotation',  desc: 'Claude Haiku structured annotation for EU vs national framing & urgency',        to: '/llm' },
-  { step: '07', icon: Search,         label: 'Explorer',        desc: 'Interactive website with MEP lookup, filters and data download',                 to: '/explorer' },
+  { step: '01', icon: Globe,     label: 'Scraping',        desc: 'EP plenary verbatim records 2019–2026 scraped from europarl.europa.eu; speaker roles and national delegations classified.',  to: '/corpus' },
+  { step: '02', icon: Layers,    label: 'Topic Clusters',  desc: 'BERTopic inductive clustering (53 topics) on security-filtered speeches to validate and expand frame selection.',             to: '/topics' },
+  { step: '03', icon: Shield,    label: 'Frame Detection', desc: 'Paragraph-level zero-shot NLI classification into 13 security frames using mDeBERTa-v3-mnli-xnli.',                           to: '/security' },
+  { step: '04', icon: Database,  label: 'Robustness',      desc: 'Two specification checks: ML vs EN translation and paragraph vs context-window granularity (Pearson correlations).',           to: '/security' },
+  { step: '05', icon: Globe,     label: 'Explorer',        desc: 'Interactive website with country/orientation explorer, security frame profiles, and full methodology.',                        to: '/explorer' },
 ]
 
 const FINDINGS = [
   { color: '#3b82f6', tag: 'Key finding',  title: 'Economic security dominates EP security discourse',      body: 'Economic security accounts for ~43–46% of all top-1 frame assignments — stable across all years, driven by sanctions, trade coercion and supply-chain vulnerabilities.' },
-  { color: '#ef4444', tag: 'Key finding',  title: 'Military framing surges post-2022 Ukraine invasion',     body: 'Military defence rises from ~13% (2021) to ~19% (2025). The post-invasion shift represents the largest single-frame change in the observed 2019–2026 window.' },
+  { color: '#ef4444', tag: 'Key finding',  title: 'Military framing surges post-2022 Ukraine invasion',     body: 'Military defence rises from ~13% (2021) to ~19% (2025). The post-invasion shift represents the largest single-frame change in the 2019–2026 window.' },
   { color: '#f59e0b', tag: 'Key finding',  title: 'Energy security nearly doubles from 2022 onward',        body: 'Energy security jumps from ~8% (pre-2022) to ~15% (2026), reflecting sustained European discourse on gas dependency, price shocks and the post-invasion energy crisis.' },
   { color: '#14b8a6', tag: 'Key finding',  title: 'Health security: sharp COVID spike then rapid decline',  body: 'Health security peaks at 5–6% of top-1 frames in 2020–21 and falls below 1% as COVID recedes — a classic securitisation arc with a clear beginning and end.' },
 ]
@@ -61,15 +59,15 @@ export default function Home() {
             </h1>
             <p className="text-lg text-slate-400 max-w-2xl mb-8 leading-relaxed">
               A computational text analysis of how European legislators have framed, debated
-              and contested security across 32 years of plenary sessions — by country, party
-              and legislative period.
+              and contested security across EP9–10 (2019–2026) — by country, political
+              orientation and year.
             </p>
             <div className="flex flex-wrap gap-3">
               <Link to="/security" className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl text-sm transition-colors">
                 Explore Security Frames <ArrowRight size={14} />
               </Link>
               <Link to="/explorer" className="flex items-center gap-2 px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold rounded-xl text-sm transition-colors border border-slate-700">
-                Search MEPs <Search size={14} />
+                Browse Countries <Globe size={14} />
               </Link>
             </div>
           </motion.div>
@@ -93,7 +91,7 @@ export default function Home() {
       {/* Key findings */}
       <section className="max-w-7xl mx-auto px-6 py-14">
         <h2 className="text-xl font-bold text-white mb-2">Key Findings</h2>
-        <p className="text-sm text-slate-500 mb-8">From the zero-shot NLI classification pipeline (EP9–10, 2019–2026). Country- and party-level breakdowns forthcoming.</p>
+        <p className="text-sm text-slate-500 mb-8">From the zero-shot NLI classification pipeline (EP9–10, 2019–2026). 37,201 security-labelled paragraphs across 28 national delegations.</p>
         <div className="grid sm:grid-cols-2 gap-4">
           {FINDINGS.map((f, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 * i + 0.2 }}
@@ -110,8 +108,8 @@ export default function Home() {
       <section className="border-t border-slate-800 bg-slate-900/50">
         <div className="max-w-7xl mx-auto px-6 py-14">
           <h2 className="text-xl font-bold text-white mb-2">Analysis Pipeline</h2>
-          <p className="text-sm text-slate-500 mb-8">Seven steps from raw HTML to interactive visualisation.</p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <p className="text-sm text-slate-500 mb-8">Five steps from raw HTML to interactive visualisation.</p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-3">
             {PIPELINE.map(({ step, icon: Icon, label, desc, to }, i) => (
               <motion.div key={step} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * i + 0.1 }}>
                 <Link to={to} className="block card p-4 hover:border-blue-700/50 hover:bg-slate-800/50 transition-colors h-full group">
@@ -134,8 +132,8 @@ export default function Home() {
           <h2 className="text-xl font-bold text-white mb-4">Research Motivation</h2>
           <div className="space-y-4 text-sm text-slate-400 leading-relaxed">
             <p>This project grows out of a shared interest in the <strong className="text-slate-200">political economy of security in the European Union</strong> — and in particular, the contested nature of what "security" means inside Europe's core deliberative institution.</p>
-            <p>Security has never been a stable concept in EU politics. From Cold War anxieties to the post-9/11 expansion of internal security regimes, from migration debates recast as border threats to the post-2022 resurgence of hard defence, the EP's plenary debates offer a longitudinal record of how security frames emerge, compete, and shift.</p>
-            <p>By combining web scraping, topic modelling, sentiment analysis, and LLM annotation, we map how security discourse has evolved across <strong className="text-slate-200">seven parliamentary terms</strong>, identifying the role of crises, elections, and ideological cleavages in shaping what European legislators say — and don't say — about security.</p>
+            <p>Security has never been a stable concept in EU politics. From migration debates recast as border threats to the post-2022 resurgence of hard defence, the EP's plenary debates offer a longitudinal record of how security frames emerge, compete, and shift across a period of extraordinary geopolitical turbulence.</p>
+            <p>By combining web scraping, topic modelling, and zero-shot NLI classification, we map how security discourse has evolved across <strong className="text-slate-200">two parliamentary terms (EP9–10, 2019–2026)</strong>, identifying the role of crises, elections, and ideological cleavages in shaping what European legislators say — and don't say — about security.</p>
           </div>
         </div>
       </section>

@@ -1,10 +1,10 @@
 import { Filter, X } from 'lucide-react'
 import { useFilters } from '../context/FilterContext'
-import { COUNTRIES, PARTIES, PERIODS } from '../data/placeholder'
+import { COUNTRIES, ORIENTATIONS } from '../data/placeholder'
 
 export default function FilterBar() {
-  const { country, party, period, setFilter, resetFilters } = useFilters()
-  const active = country !== 'All' || party !== 'All' || period !== 'All'
+  const { country, orientation, setFilter, resetFilters } = useFilters()
+  const active = country !== 'All' || orientation !== 'All'
 
   return (
     <div className="sticky top-14 z-40 bg-slate-950/90 backdrop-blur border-b border-slate-800/60">
@@ -19,29 +19,18 @@ export default function FilterBar() {
         >
           <option value="All">All countries</option>
           {COUNTRIES.map(c => (
-            <option key={c.code} value={c.name}>{c.flag} {c.name}</option>
+            <option key={c.country} value={c.country}>{c.flag} {c.country}</option>
           ))}
         </select>
 
         <select
-          value={party}
-          onChange={e => setFilter('party', e.target.value)}
+          value={orientation}
+          onChange={e => setFilter('orientation', e.target.value)}
           className="bg-slate-800 border border-slate-700 text-slate-300 text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-blue-500"
         >
-          <option value="All">All parties</option>
-          {PARTIES.map(p => (
-            <option key={p.id} value={p.party}>{p.party}</option>
-          ))}
-        </select>
-
-        <select
-          value={period}
-          onChange={e => setFilter('period', e.target.value)}
-          className="bg-slate-800 border border-slate-700 text-slate-300 text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-blue-500"
-        >
-          <option value="All">All periods</option>
-          {PERIODS.map(p => (
-            <option key={p.id} value={p.id}>{p.label}</option>
+          <option value="All">All orientations</option>
+          {ORIENTATIONS.map(o => (
+            <option key={o.id} value={o.id}>{o.label}</option>
           ))}
         </select>
 
@@ -56,7 +45,7 @@ export default function FilterBar() {
 
         {active && (
           <span className="text-xs text-amber-400 bg-amber-900/30 border border-amber-700/40 px-2 py-1 rounded-lg">
-            Filtered view — data scaled proportionally
+            Filtered view — charts highlight selected entity
           </span>
         )}
       </div>

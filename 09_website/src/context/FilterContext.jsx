@@ -3,10 +3,10 @@ import { createContext, useContext, useState } from 'react'
 const FilterContext = createContext(null)
 
 export function FilterProvider({ children }) {
-  const [filters, setFilters] = useState({ country: 'All', party: 'All', period: 'All' })
+  const [filters, setFilters] = useState({ country: 'All', orientation: 'All' })
 
   const setFilter = (key, value) => setFilters(prev => ({ ...prev, [key]: value }))
-  const resetFilters = () => setFilters({ country: 'All', party: 'All', period: 'All' })
+  const resetFilters = () => setFilters({ country: 'All', orientation: 'All' })
 
   return (
     <FilterContext.Provider value={{ ...filters, setFilter, resetFilters }}>

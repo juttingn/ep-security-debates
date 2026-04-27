@@ -1,14 +1,12 @@
 import { NavLink } from 'react-router-dom'
-import { BarChart2, Home, Database, Layers, Shield, MessageSquare, Brain, Search } from 'lucide-react'
+import { BarChart2, Home, Database, Layers, Shield, Globe } from 'lucide-react'
 
 const NAV = [
   { to: '/',          label: 'Home',           icon: Home },
   { to: '/corpus',    label: 'Corpus',         icon: Database },
   { to: '/topics',    label: 'Topics',         icon: Layers },
   { to: '/security',  label: 'Security Frames',icon: Shield },
-  { to: '/sentiment', label: 'Sentiment',      icon: MessageSquare },
-  { to: '/llm',       label: 'LLM Analysis',   icon: Brain },
-  { to: '/explorer',  label: 'Explorer',       icon: Search },
+  { to: '/explorer',  label: 'Explorer',       icon: Globe },
 ]
 
 export default function Navbar() {
@@ -16,7 +14,6 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 bg-slate-950/90 backdrop-blur border-b border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-14">
-          {/* Logo */}
           <NavLink to="/" className="flex items-center gap-2 shrink-0">
             <div className="flex items-center gap-0.5">
               {[...Array(6)].map((_, i) => (
@@ -28,7 +25,6 @@ export default function Navbar() {
             </span>
           </NavLink>
 
-          {/* Nav links */}
           <nav className="flex items-center gap-0.5 overflow-x-auto">
             {NAV.map(({ to, label, icon: Icon }) => (
               <NavLink
@@ -49,7 +45,6 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {/* GitHub link */}
           <a
             href="https://github.com/juttingn/ep-security-debates"
             target="_blank"

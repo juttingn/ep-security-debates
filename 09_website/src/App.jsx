@@ -6,11 +6,9 @@ import Home from './pages/Home'
 import Corpus from './pages/Corpus'
 import TopicModel from './pages/TopicModel'
 import SecurityFrames from './pages/SecurityFrames'
-import Sentiment from './pages/Sentiment'
-import LLMAnalysis from './pages/LLMAnalysis'
 import Explorer from './pages/Explorer'
 
-const DATA_ROUTES = ['/corpus', '/topics', '/security', '/sentiment', '/llm', '/explorer']
+const DATA_ROUTES = ['/corpus', '/topics', '/security', '/explorer']
 
 export default function App() {
   const location = useLocation()
@@ -27,8 +25,6 @@ export default function App() {
             <Route path="/corpus"    element={<Corpus />} />
             <Route path="/topics"    element={<TopicModel />} />
             <Route path="/security"  element={<SecurityFrames />} />
-            <Route path="/sentiment" element={<Sentiment />} />
-            <Route path="/llm"       element={<LLMAnalysis />} />
             <Route path="/explorer"  element={<Explorer />} />
           </Routes>
         </AnimatePresence>

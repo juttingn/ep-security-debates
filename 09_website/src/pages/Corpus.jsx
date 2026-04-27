@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { Database } from 'lucide-react'
 import { useFilters } from '../context/FilterContext'
-import { YEARLY_DATA, COUNTRIES, PARTIES } from '../data/placeholder'
+import { TOP1_YEARLY, COUNTRIES, ORIENTATION_TOTALS, ORIENTATIONS, FRAMES } from '../data/placeholder'
 import { PageHeader, StatCard, ChartCard, CustomTooltip } from '../components/ui'
 
 const PT = ({ children }) => (
@@ -12,62 +12,66 @@ const PT = ({ children }) => (
   </motion.div>
 )
 
-export default function Corpus() {
-  const { country, party } = useFilters()
+const FRAME_MAP = Object.fromEntries(FRAMES.map(f => [f.id, f]))
 
-  const scale = useMemo(() => {
-    if (country !== 'All') {
-      const c = COUNTRIES.find(x => x.name === country)
-      return c ? c.speeches / COUNTRIES.reduce((s, x) => s + x.speeches, 0) : 1
-    }
-    if (party !== 'All') {
-      const p = PARTIES.find(x => x.party === party)
-      return p ? p.speeches / PARTIES.reduce((s, x) => s + x.speeches, 0) : 1
-    }
-    return 1
-  }, [country, party])
+function dominantFrame(row) {
+  const frameKeys = FRAMES.map(f => f.id).filter(id => id !== 'institutional_procedural')
+  return frameKeys.reduce((best, id) => (row[id] > (row[best] ?? 0) ? id : best), frameKeys[0])
+}
+
+export default function Corpus() {
+  const { country, orientation } = useFilters()
+
+  const totalParas = TOP1_YEARLY.reduce((s, d) => s + d.n, 0)
+  const secParas   = COUNTRIES.reduce((s, c) => s + c.total, 0)
 
   const yearData = useMemo(() =>
-    YEARLY_DATA.map(d => ({ ...d, total: Math.round(d.total * scale), security: Math.round(d.security * scale) })),
-    [scale]
+    TOP1_YEARLY.map(d => ({ year: d.year, total: d.n })),
+    []
   )
 
   const countryData = useMemo(() =>
     [...COUNTRIES]
-      .sort((a, b) => b.speeches - a.speeches)
-      .slice(0, 18)
-      .map(c => ({ name: c.flag + ' ' + c.name, speeches: c.speeches, secPct: c.secPct, highlight: c.name === country })),
+      .sort((a, b) => b.total - a.total)
+      .map(c => ({
+        name:      c.flag + ' ' + c.country,
+        total:     c.total,
+        highlight: c.country === country,
+        domFrame:  dominantFrame(c),
+      })),
     [country]
   )
 
-  const partyData = useMemo(() =>
-    PARTIES.map(p => ({ party: p.party, speeches: p.speeches, secPct: p.secPct, color: p.color })),
-    []
+  const orientData = useMemo(() =>
+    ORIENTATION_TOTALS.map(o => ({
+      orientation: o.orientation,
+      total:       o.total,
+      color:       ORIENTATIONS.find(x => x.id === o.orientation)?.color ?? '#64748b',
+      highlight:   o.orientation === orientation,
+    })),
+    [orientation]
   )
-
-  const totalSpeeches = YEARLY_DATA.reduce((s, d) => s + Math.round(d.total * scale), 0)
-  const totalSecurity = YEARLY_DATA.reduce((s, d) => s + Math.round(d.security * scale), 0)
 
   return (
     <PT>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         <PageHeader
           title="Corpus Overview"
-          subtitle="487,000+ plenary speeches scraped from europarl.europa.eu, spanning EP4 (1994) through EP10 (2026). Speech turns are classified by speaker role, political group, national delegation and date."
+          subtitle="EP plenary speeches scraped from europarl.europa.eu (EP9–10, Jul 2019–early 2026). Security-relevant speeches pre-filtered; paragraphs (≥450 chars) classified by NLI model."
           icon={Database}
         />
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <StatCard value={totalSpeeches.toLocaleString()}          label="Total speeches"              color="text-blue-400"    delay={0}    />
-          <StatCard value={totalSecurity.toLocaleString()}          label="Security-coded speeches"     color="text-red-400"     delay={0.05} />
-          <StatCard value={`${((totalSecurity/totalSpeeches)*100).toFixed(1)}%`} label="Security rate"  color="text-amber-400"   delay={0.1}  />
-          <StatCard value="28 countries"                            label="National delegations"        color="text-emerald-400" delay={0.15} />
+          <StatCard value={totalParas.toLocaleString()}   label="Total paragraphs classified"  color="text-blue-400"    delay={0}    />
+          <StatCard value={secParas.toLocaleString()}     label="Security-labelled paragraphs" color="text-red-400"     delay={0.05} />
+          <StatCard value={`${((secParas/totalParas)*100).toFixed(1)}%`} label="Security rate (multi-label)" color="text-amber-400" delay={0.1} />
+          <StatCard value="28 countries"                  label="National delegations"          color="text-emerald-400" delay={0.15} />
         </div>
 
         {/* Timeline */}
         <ChartCard
-          title="Speeches Over Time (1994–2025)"
-          description="Total plenary speech turns per year and security-coded subset. Peaks in 2022–23 reflect the Ukraine war driving a surge in debate volume."
+          title="Paragraphs by Year (2019–2026)"
+          description="Total classified paragraphs per year. 2019 and 2020 are small-sample years (partial EP9 launch + COVID session disruptions). The 2022 surge reflects the Ukraine war driving a sustained increase in security debate volume."
           className="mb-6"
           animationDelay={0.1}
         >
@@ -78,17 +82,12 @@ export default function Corpus() {
                   <stop offset="5%"  stopColor="#3b82f6" stopOpacity={0.3} />
                   <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
                 </linearGradient>
-                <linearGradient id="gSec" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%"  stopColor="#ef4444" stopOpacity={0.5} />
-                  <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
-                </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="year" tick={{ fill: '#94a3b8', fontSize: 11 }} tickLine={false} axisLine={{ stroke: '#1e293b' }} interval={4} />
+              <XAxis dataKey="year" tick={{ fill: '#94a3b8', fontSize: 11 }} tickLine={false} axisLine={{ stroke: '#1e293b' }} />
               <YAxis tick={{ fill: '#94a3b8', fontSize: 11 }} tickLine={false} axisLine={false} tickFormatter={v => `${(v/1000).toFixed(0)}k`} />
               <Tooltip content={<CustomTooltip />} />
-              <Area type="monotone" dataKey="total"    name="Total speeches"    stroke="#3b82f6" fill="url(#gTotal)" strokeWidth={2} dot={false} />
-              <Area type="monotone" dataKey="security" name="Security speeches" stroke="#ef4444" fill="url(#gSec)"   strokeWidth={2} dot={false} />
+              <Area type="monotone" dataKey="total" name="Paragraphs" stroke="#3b82f6" fill="url(#gTotal)" strokeWidth={2} dot={false} />
             </AreaChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -96,49 +95,72 @@ export default function Corpus() {
         <div className="grid md:grid-cols-2 gap-6">
           {/* By country */}
           <ChartCard
-            title="Speeches by National Delegation (top 18)"
-            description="Total speech turns per country. Right-hand percentage shows the share of that country's speeches coded as security-related."
+            title="Security Paragraphs by Country"
+            description="Multi-label security paragraph count per national delegation, sorted by total. Germany, Poland and Ireland are the three largest delegations in the corpus."
             animationDelay={0.2}
           >
-            <div className="space-y-1.5 mt-2">
-              {countryData.map((c, i) => (
-                <div key={i} className={`flex items-center gap-2 text-xs ${c.highlight ? 'opacity-100' : 'opacity-80'}`}>
-                  <div className="w-28 text-slate-400 truncate shrink-0">{c.name}</div>
-                  <div className="flex-1 h-4 bg-slate-800 rounded overflow-hidden">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${(c.speeches / countryData[0].speeches) * 100}%` }}
-                      transition={{ delay: i * 0.02 + 0.2, duration: 0.5 }}
-                      className={`h-full rounded ${c.highlight ? 'bg-amber-400' : 'bg-blue-600'}`}
-                    />
+            <div className="space-y-1.5 mt-2 max-h-96 overflow-y-auto pr-1">
+              {countryData.map((c, i) => {
+                const f = FRAME_MAP[c.domFrame]
+                return (
+                  <div key={i} className={`flex items-center gap-2 text-xs ${c.highlight ? 'opacity-100' : 'opacity-80'}`}>
+                    <div className="w-32 text-slate-400 truncate shrink-0">{c.name}</div>
+                    <div className="flex-1 h-4 bg-slate-800 rounded overflow-hidden">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${(c.total / countryData[0].total) * 100}%` }}
+                        transition={{ delay: i * 0.015 + 0.2, duration: 0.5 }}
+                        className="h-full rounded"
+                        style={{ background: c.highlight ? '#f59e0b' : (f?.color ?? '#3b82f6') }}
+                      />
+                    </div>
+                    <div className="w-14 text-right text-slate-400">{c.total.toLocaleString()}</div>
                   </div>
-                  <div className="w-16 text-right text-slate-400">{c.speeches.toLocaleString()}</div>
-                  <div className="w-10 text-right font-semibold" style={{ color: c.secPct > 14 ? '#ef4444' : c.secPct > 10 ? '#f97316' : '#94a3b8' }}>
-                    {c.secPct}%
-                  </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </ChartCard>
 
-          {/* By party */}
+          {/* By orientation */}
           <ChartCard
-            title="Speeches by Political Group"
-            description="EPP and S&D dominate speech volume. ID/PfE has the highest share of security-coded speeches (16%), the Left the lowest (6%)."
+            title="Security Paragraphs by Political Orientation"
+            description="Right-wing MEPs (EPP, ECR, PfE, ECR) produce the largest share of security discourse by volume. The Right orientation alone accounts for ~37% of all security-labelled paragraphs."
             animationDelay={0.25}
           >
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={partyData} margin={{ top: 5, right: 30, left: 0, bottom: 30 }}>
+              <BarChart data={orientData} margin={{ top: 5, right: 30, left: 0, bottom: 30 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                <XAxis dataKey="party" tick={{ fill: '#94a3b8', fontSize: 11 }} tickLine={false} axisLine={{ stroke: '#1e293b' }} angle={-20} textAnchor="end" />
+                <XAxis dataKey="orientation" tick={{ fill: '#94a3b8', fontSize: 11 }} tickLine={false} axisLine={{ stroke: '#1e293b' }} angle={-15} textAnchor="end" />
                 <YAxis tick={{ fill: '#94a3b8', fontSize: 11 }} tickLine={false} axisLine={false} tickFormatter={v => `${(v/1000).toFixed(0)}k`} />
                 <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="speeches" name="Total speeches" radius={[3, 3, 0, 0]}>
-                  {partyData.map((p, i) => <Cell key={i} fill={p.color} />)}
+                <Bar dataKey="total" name="Security paragraphs" radius={[3, 3, 0, 0]}>
+                  {orientData.map((d, i) => (
+                    <Cell key={i} fill={d.highlight ? '#f59e0b' : d.color} />
+                  ))}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
+            <p className="text-[10px] text-slate-600 mt-2 italic">Multi-label counts: a paragraph may be counted once per orientation group that produced it. Orientation based on EP political group membership.</p>
           </ChartCard>
+        </div>
+
+        {/* Corpus notes */}
+        <div className="card p-5 mt-6">
+          <h3 className="text-sm font-semibold text-white mb-3">Data Notes</h3>
+          <div className="grid sm:grid-cols-3 gap-4 text-xs text-slate-400">
+            <div>
+              <span className="text-slate-200 font-medium block mb-1">Coverage</span>
+              EP9 (Jul 2019–Jun 2024) and EP10 (Jul 2024–early 2026). 2019 and 2020 are partial years with limited debate volume. The UK appears in the corpus until Brexit was completed.
+            </div>
+            <div>
+              <span className="text-slate-200 font-medium block mb-1">Pre-filtering</span>
+              Speeches were pre-filtered for security-relevant keywords before paragraph segmentation. The 78,041 classified paragraphs come from 19,859 speeches; the 37,201 security-labelled paragraphs received at least one NLI label above the 0.4 confidence threshold.
+            </div>
+            <div>
+              <span className="text-slate-200 font-medium block mb-1">Political orientation</span>
+              Orientation is assigned at the EP political group level and mapped to a six-category Left–Right scale. NI (Non-Inscrits) includes unaffiliated MEPs. Groups that changed name between EP9 and EP10 (e.g. ID → PfE) are aggregated under Right or Far-Right.
+            </div>
+          </div>
         </div>
       </div>
     </PT>
