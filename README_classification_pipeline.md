@@ -1,13 +1,12 @@
 # Security Framing in the European Parliament
 
 Pipeline for analysing how security framing in EP debates has evolved since
-2015, following the approach of the UK / Bundestag migration framing project.
+2019, following the approach of the UK / Bundestag migration framing project.
 
 ## Project layout on Google Drive
 
-Everything lives under a single project folder on your Drive. The
-pipeline reads and writes there exclusively, so nothing ever lives only
-in the Colab VM (which vanishes when the session ends).
+Everything lives under a single project folder on Google Drive (https://drive.google.com/drive/folders/1oUIqaypIW2Cz_0lZ4P3UhrYXNlsLfdko?dmr=1&ec=wgc-drive-%5Bmodule%5D-goto). The
+pipeline reads and writes there.
 
 ```
 /content/drive/MyDrive/classification_pipeline_security_framing/
