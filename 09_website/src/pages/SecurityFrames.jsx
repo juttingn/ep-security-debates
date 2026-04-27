@@ -95,14 +95,14 @@ const PHASES = [
     label: '2022 onward',
     color: '#ef4444',
     title: 'War-driven military, energy & hybrid threats',
-    body: 'Russia's invasion produces sharp increases in military defence (12→19% by 2025) and energy security (8→15%). Foreign information interference grows steadily toward the 2024 EP elections.',
+    body: "Russia’s invasion produces sharp increases in military defence (12→19% by 2025) and energy security (8→15%). Foreign information interference grows steadily toward the 2024 EP elections.",
   },
 ]
 
 // Key frame trends
 const KEY_TRENDS = [
-  { id: 'economic',     headline: 'Dominant and stable (≈43–46%)',     detail: 'Economic security is the most consistently invoked frame — driven by sanctions, trade coercion, and supply chain vulnerabilities — reinforced further during COVID and after Russia's invasion.' },
-  { id: 'military_defence', headline: 'Dips 2020–21, surges from 2022', detail: 'Military defence rises in 2019 (PESCO/EDF debates), dips during the pandemic, then recovers sharply to ~19% by 2025 following Russia's invasion of Ukraine.' },
+  { id: 'economic',     headline: 'Dominant and stable (≈43–46%)',     detail: "Economic security is the most consistently invoked frame — driven by sanctions, trade coercion, and supply chain vulnerabilities — reinforced further during COVID and after Russia's invasion." },
+  { id: 'military_defence', headline: 'Dips 2020–21, surges from 2022', detail: "Military defence rises in 2019 (PESCO/EDF debates), dips during the pandemic, then recovers sharply to ~19% by 2025 following Russia's invasion of Ukraine." },
   { id: 'energy',       headline: 'Sharp increase 2022, remains elevated', detail: 'Energy security nearly doubles from ~8% (pre-2022) to ~14% by 2026, driven by European gas dependency and the post-invasion energy crisis.' },
   { id: 'health',       headline: 'COVID spike 2020–21, then rapid decline', detail: 'Health security rises to 5–6% of top-1 frames in 2020–21 and then falls back below 1% as COVID recedes from the security agenda.' },
   { id: 'border_migration', headline: 'Gradual decline (14%→10%)', detail: 'Border/migration loses relative salience as the agenda shifts to the pandemic and then the Ukraine war, but remains a persistent baseline concern.' },
