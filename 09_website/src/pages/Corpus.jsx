@@ -70,6 +70,7 @@ export default function Corpus() {
 
         {/* Timeline */}
         <ChartCard
+          placeholder={false}
           title="Paragraphs by Year (2019–2026)"
           description="Total classified paragraphs per year. 2019 and 2020 are small-sample years (partial EP9 launch + COVID session disruptions). The 2022 surge reflects the Ukraine war driving a sustained increase in security debate volume."
           className="mb-6"
@@ -95,6 +96,7 @@ export default function Corpus() {
         <div className="grid md:grid-cols-2 gap-6">
           {/* By country */}
           <ChartCard
+            placeholder={false}
             title="Security Paragraphs by Country"
             description="Multi-label security paragraph count per national delegation, sorted by total. Germany, Poland and Ireland are the three largest delegations in the corpus."
             animationDelay={0.2}
@@ -123,6 +125,7 @@ export default function Corpus() {
 
           {/* By orientation */}
           <ChartCard
+            placeholder={false}
             title="Security Paragraphs by Political Orientation"
             description="Right-wing MEPs (EPP, ECR, PfE, ECR) produce the largest share of security discourse by volume. The Right orientation alone accounts for ~37% of all security-labelled paragraphs."
             animationDelay={0.25}
