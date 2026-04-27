@@ -35,7 +35,7 @@ export function StatCard({ value, label, icon: Icon, color = 'text-blue-400', de
   )
 }
 
-export function ChartCard({ title, description, children, className = '', animationDelay = 0 }) {
+export function ChartCard({ title, description, children, className = '', animationDelay = 0, placeholder = true }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -45,7 +45,7 @@ export function ChartCard({ title, description, children, className = '', animat
     >
       <div className="flex items-start justify-between mb-1">
         <h3 className="text-sm font-semibold text-white">{title}</h3>
-        <PlaceholderBadge />
+        {placeholder && <PlaceholderBadge />}
       </div>
       {description && <p className="text-xs text-slate-500 mb-4 leading-relaxed">{description}</p>}
       {children}

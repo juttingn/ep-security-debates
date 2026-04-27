@@ -55,11 +55,19 @@ export const PARTIES = [
 export const PARTY_DATA = PARTIES // alias used by Sentiment page
 
 export const FRAMES = [
-  { id: 'military',   label: 'Military & Defence',   color: '#ef4444' },
-  { id: 'border',     label: 'Border & Migration',   color: '#f97316' },
-  { id: 'terrorism',  label: 'Counter-terrorism',    color: '#eab308' },
-  { id: 'cyber',      label: 'Cyber & Digital',      color: '#3b82f6' },
-  { id: 'human',      label: 'Human & Societal',     color: '#22c55e' },
+  { id: 'economic',                        label: 'Economic Security',             shortLabel: 'Economic',     color: '#3b82f6' },
+  { id: 'military_defence',                label: 'Military Defence',              shortLabel: 'Military',     color: '#ef4444' },
+  { id: 'energy',                          label: 'Energy Security',               shortLabel: 'Energy',       color: '#f59e0b' },
+  { id: 'terrorism',                       label: 'Terrorism',                     shortLabel: 'Terrorism',    color: '#eab308' },
+  { id: 'border_migration',                label: 'Border / Migration',            shortLabel: 'Border',       color: '#f97316' },
+  { id: 'health',                          label: 'Health Security',               shortLabel: 'Health',       color: '#14b8a6' },
+  { id: 'gender_based_violence',           label: 'Gender-Based Violence',         shortLabel: 'GBV',          color: '#ec4899' },
+  { id: 'foreign_information_interference',label: 'Foreign Info. Interference',   shortLabel: 'FII',          color: '#8b5cf6' },
+  { id: 'organised_crime',                 label: 'Organised Crime',               shortLabel: 'Org. Crime',   color: '#a855f7' },
+  { id: 'environmental',                   label: 'Environmental Security',        shortLabel: 'Environment',  color: '#22c55e' },
+  { id: 'food_security',                   label: 'Food Security',                 shortLabel: 'Food',         color: '#84cc16' },
+  { id: 'cyber',                           label: 'Cyber Security',                shortLabel: 'Cyber',        color: '#0ea5e9' },
+  { id: 'institutional_procedural',        label: 'Institutional / Procedural',   shortLabel: 'Procedural',   color: '#64748b' },
 ]
 
 // ─── Time series (1994–2025) ──────────────────────────────────────────────────
@@ -257,4 +265,138 @@ export const MEPS = [
   { id: 38, name: 'Raimonds Bergmanis', country: 'Latvia',     party: 'EPP',       periods: ['8th','9th','10th'], totalSpeeches:  410, securitySpeeches:  82, securityPct: 20, dominantFrame: 'military', sentimentScore:  0.16, frameBreakdown: { military: 60, border: 10, terrorism:  6, cyber: 20, human:  4 }, notableQuote: 'Latvia remembers 1940. The historical memory of our nation shapes our security posture in ways that do not always translate easily across the Council table.' },
   { id: 39, name: 'Elisa Conti',        country: 'Italy',      party: 'The Left',  periods: ['9th','10th'],       totalSpeeches:  380, securitySpeeches:  23, securityPct:  6, dominantFrame: 'human',    sentimentScore: -0.26, frameBreakdown: { military:  4, border: 12, terrorism:  8, cyber: 10, human: 66 }, notableQuote: 'The European Parliament approved a record defence budget while simultaneously cutting development aid. This tells you everything about our hierarchy of security priorities.' },
   { id: 40, name: 'Wojciech Kalinowski',country: 'Poland',     party: 'Renew',     periods: ['9th','10th'],       totalSpeeches:  510, securitySpeeches:  87, securityPct: 17, dominantFrame: 'military', sentimentScore:  0.11, frameBreakdown: { military: 48, border: 14, terrorism: 10, cyber: 20, human:  8 }, notableQuote: 'Poland\'s support for Ukraine is not only moral solidarity — it is forward defence of EU territory. The front line is where our security begins.' },
+]
+
+// ─── Frame definitions (13-frame classification system) ──────────────────────
+
+export const FRAME_DEFINITIONS = {
+  military_defence:                 'The speaker refers to armed forces, weapons, NATO commitments, or defence capacity in the context of war or military aggression.',
+  border_migration:                 'The speaker frames migration as a large-scale threat requiring border control measures such as asylum restrictions, returns, or external border enforcement.',
+  terrorism:                        'The speaker describes a specific terrorist attack, ongoing terrorist threat, or organised extremist violence causing deaths or injuries in Europe.',
+  organised_crime:                  'The speaker refers to cross-border organised crime such as drug trafficking, money laundering, weapons trade, or human trafficking.',
+  cyber:                            'The speaker refers to cyber attacks, hacking, ransomware, or threats to digital infrastructure such as public services or networks.',
+  foreign_information_interference: 'The speaker refers to foreign disinformation, propaganda, or attempts to influence elections or public opinion in Europe.',
+  energy:                           'The speaker describes energy supply disruptions, price shocks, or dependence on foreign energy sources as a vulnerability in the context of geopolitical conflict or war.',
+  economic:                         'The speaker describes economic coercion, sanctions, or trade restrictions imposed by one country on another to gain political leverage, or economic disruptions to supply chains caused by geopolitical conflict.',
+  environmental:                    'The speaker refers to climate change causing instability, conflict, or displacement affecting security.',
+  health:                           'The speaker refers to infectious disease outbreaks, pandemics, or biological threats causing illness, deaths, or shortages of medicines.',
+  gender_based_violence:            'The speaker refers to gender-based violence including sexual violence, femicide, or trafficking of women in conflict or security contexts.',
+  food_security:                    'The speaker refers to disruptions of food supply, grain exports, or food shortages caused by war, blockade, or geopolitical conflict.',
+  institutional_procedural:         'The speaker refers to EU procedures, legislation, budgets, or institutional processes without mentioning a specific security threat. (Reference category — non-security)',
+}
+
+export const FRAME_LITERATURE = {
+  military_defence:                 'Buzan, Wæver & de Wilde (1998) — Military sector',
+  border_migration:                 'Buzan et al. (1998) — Societal sector; Huysmans (2000); Léonard & Kaunert (2019)',
+  terrorism:                        'Buzan et al. (1998) — Political sector; post-9/11 literature; Stępka (2022)',
+  organised_crime:                  'Buzan et al. (1998) — Political sector (distinct risk)',
+  cyber:                            'Hansen & Nissenbaum (2009), ISQ 53(4)',
+  foreign_information_interference: 'EU Security Union Strategy COM(2020)605; ProtectEU COM(2025)',
+  energy:                           'Buzan et al. (1998) — Economic sector',
+  economic:                         'Buzan et al. (1998) — Economic sector; Entman (1993)',
+  environmental:                    'Buzan et al. (1998) — Environmental sector',
+  health:                           'Buzan et al. (1998) — Societal sector',
+  gender_based_violence:            'Buzan et al. (1998) — Societal sector (refined)',
+  food_security:                    'Buzan et al. (1998) — Economic/Societal sector',
+  institutional_procedural:         'Reference/non-security category',
+}
+
+// ─── Top-1 dominant frame shares by year (2019–2026) ─────────────────────────
+// Source: frames_classified_para_ML_frame_shares_by_year.csv
+// Values are percentages; n = paragraph count for that year
+
+export const TOP1_YEARLY = [
+  { year: 2019, n: 560,   economic: 44.9,  military_defence: 18.87, energy:  9.33, terrorism: 10.63, border_migration: 14.32, health: 0.00, gender_based_violence: 0.43, foreign_information_interference: 0.00, organised_crime: 0.43, environmental: 1.08, food_security: 0.00, cyber: 0.00, institutional_procedural: 0.00 },
+  { year: 2020, n: 368,   economic: 41.95, military_defence: 14.77, energy:  9.06, terrorism: 12.42, border_migration: 13.09, health: 5.70, gender_based_violence: 1.68, foreign_information_interference: 0.34, organised_crime: 0.00, environmental: 0.34, food_security: 0.00, cyber: 0.00, institutional_procedural: 0.67 },
+  { year: 2021, n: 8933,  economic: 45.91, military_defence: 12.73, energy:  8.22, terrorism: 11.06, border_migration: 12.91, health: 5.35, gender_based_violence: 0.89, foreign_information_interference: 0.40, organised_crime: 0.90, environmental: 0.54, food_security: 0.23, cyber: 0.39, institutional_procedural: 0.47 },
+  { year: 2022, n: 17433, economic: 45.47, military_defence: 13.71, energy: 13.80, terrorism: 11.09, border_migration: 10.33, health: 2.18, gender_based_violence: 0.81, foreign_information_interference: 0.49, organised_crime: 0.31, environmental: 0.40, food_security: 0.59, cyber: 0.51, institutional_procedural: 0.31 },
+  { year: 2023, n: 17272, economic: 46.27, military_defence: 14.45, energy: 10.96, terrorism: 12.67, border_migration: 11.13, health: 1.25, gender_based_violence: 0.83, foreign_information_interference: 0.58, organised_crime: 0.50, environmental: 0.46, food_security: 0.35, cyber: 0.21, institutional_procedural: 0.34 },
+  { year: 2024, n: 12944, economic: 45.06, military_defence: 15.46, energy: 11.14, terrorism: 12.02, border_migration: 10.90, health: 0.83, gender_based_violence: 1.01, foreign_information_interference: 1.32, organised_crime: 0.72, environmental: 0.44, food_security: 0.43, cyber: 0.35, institutional_procedural: 0.33 },
+  { year: 2025, n: 15939, economic: 42.95, military_defence: 18.91, energy: 12.64, terrorism: 11.33, border_migration: 10.20, health: 0.48, gender_based_violence: 0.83, foreign_information_interference: 0.75, organised_crime: 0.46, environmental: 0.38, food_security: 0.27, cyber: 0.39, institutional_procedural: 0.42 },
+  { year: 2026, n: 4592,  economic: 42.33, military_defence: 17.53, energy: 14.78, terrorism: 11.20, border_migration: 10.61, health: 0.43, gender_based_violence: 1.08, foreign_information_interference: 0.24, organised_crime: 0.40, environmental: 0.22, food_security: 0.19, cyber: 0.48, institutional_procedural: 0.51, partial: true },
+]
+
+// ─── Multi-label frame prevalence by year (% paragraphs flagged per frame) ───
+// Source: frames_classified_para_ML_multilabel_shares_by_year.csv
+// A paragraph can be flagged for multiple frames simultaneously
+
+export const MULTILABEL_YEARLY = [
+  { year: 2019, n: 560,   economic: 67.86, border_migration: 61.61, terrorism: 54.82, energy: 52.68, military_defence: 51.43, gender_based_violence: 26.07, organised_crime: 20.18, food_security: 18.93, cyber: 11.43, health:  6.43, foreign_information_interference:  6.79, environmental: 3.04, institutional_procedural: 1.79 },
+  { year: 2020, n: 368,   economic: 63.32, border_migration: 57.61, terrorism: 49.73, energy: 43.21, military_defence: 34.78, gender_based_violence: 20.11, organised_crime: 12.23, food_security: 10.87, cyber:  7.88, health:  9.51, foreign_information_interference:  6.25, environmental: 1.90, institutional_procedural: 1.09 },
+  { year: 2021, n: 8933,  economic: 64.12, border_migration: 49.43, terrorism: 48.80, energy: 40.81, military_defence: 37.10, gender_based_violence: 18.49, organised_crime: 14.47, food_security: 11.45, cyber:  8.79, health: 10.30, foreign_information_interference:  5.33, environmental: 2.41, institutional_procedural: 1.29 },
+  { year: 2022, n: 17433, economic: 68.43, border_migration: 52.26, terrorism: 54.86, energy: 48.18, military_defence: 42.96, gender_based_violence: 19.62, organised_crime: 13.70, food_security: 16.81, cyber: 10.72, health:  7.66, foreign_information_interference:  6.12, environmental: 2.56, institutional_procedural: 1.15 },
+  { year: 2023, n: 17272, economic: 65.86, border_migration: 49.52, terrorism: 51.88, energy: 43.85, military_defence: 39.75, gender_based_violence: 18.66, organised_crime: 13.37, food_security: 14.32, cyber:  9.11, health:  6.21, foreign_information_interference:  5.36, environmental: 2.39, institutional_procedural: 1.30 },
+  { year: 2024, n: 12944, economic: 67.39, border_migration: 51.99, terrorism: 53.57, energy: 46.76, military_defence: 42.05, gender_based_violence: 20.68, organised_crime: 15.54, food_security: 14.89, cyber: 10.61, health:  5.89, foreign_information_interference:  7.56, environmental: 2.73, institutional_procedural: 1.41 },
+  { year: 2025, n: 15939, economic: 68.44, border_migration: 52.86, terrorism: 54.98, energy: 49.43, military_defence: 45.77, gender_based_violence: 20.58, organised_crime: 15.54, food_security: 16.29, cyber: 11.90, health:  5.73, foreign_information_interference:  6.74, environmental: 2.44, institutional_procedural: 1.83 },
+  { year: 2026, n: 4592,  economic: 67.51, border_migration: 51.85, terrorism: 53.77, energy: 49.22, military_defence: 43.16, gender_based_violence: 21.30, organised_crime: 14.72, food_security: 15.37, cyber: 12.30, health:  5.53, foreign_information_interference:  6.34, environmental: 2.13, institutional_procedural: 1.50, partial: true },
+]
+
+// ─── Robustness correlation table ────────────────────────────────────────────
+// Source: robustness_full_table.csv
+// ml_vs_en = translation check; para_vs_window = granularity check
+
+export const ROBUSTNESS_TABLE = [
+  { frame: 'energy',                        ml_vs_en_multi: 0.992, para_vs_window_multi: 0.982, ml_vs_en_top1: 0.992, para_vs_window_top1: 0.978 },
+  { frame: 'organised_crime',               ml_vs_en_multi: 0.986, para_vs_window_multi: 0.929, ml_vs_en_top1: 0.933, para_vs_window_top1: 0.936 },
+  { frame: 'food_security',                 ml_vs_en_multi: 0.981, para_vs_window_multi: 0.984, ml_vs_en_top1: 0.957, para_vs_window_top1: 0.987 },
+  { frame: 'border_migration',              ml_vs_en_multi: 0.960, para_vs_window_multi: 0.991, ml_vs_en_top1: 0.821, para_vs_window_top1: 0.976 },
+  { frame: 'health',                        ml_vs_en_multi: 0.945, para_vs_window_multi: 0.981, ml_vs_en_top1: 0.997, para_vs_window_top1: 0.999 },
+  { frame: 'military_defence',              ml_vs_en_multi: 0.945, para_vs_window_multi: 0.986, ml_vs_en_top1: 0.473, para_vs_window_top1: 0.819 },
+  { frame: 'gender_based_violence',         ml_vs_en_multi: 0.930, para_vs_window_multi: 0.934, ml_vs_en_top1: 0.919, para_vs_window_top1: 0.932 },
+  { frame: 'cyber',                         ml_vs_en_multi: 0.928, para_vs_window_multi: 0.945, ml_vs_en_top1: 0.978, para_vs_window_top1: 0.976 },
+  { frame: 'environmental',                 ml_vs_en_multi: 0.898, para_vs_window_multi: 0.856, ml_vs_en_top1: 0.927, para_vs_window_top1: 0.905 },
+  { frame: 'terrorism',                     ml_vs_en_multi: 0.825, para_vs_window_multi: 0.959, ml_vs_en_top1: -0.021, para_vs_window_top1: 0.351 },
+  { frame: 'foreign_information_interference', ml_vs_en_multi: 0.760, para_vs_window_multi: 0.692, ml_vs_en_top1: 0.956, para_vs_window_top1: 0.989 },
+  { frame: 'economic',                      ml_vs_en_multi: 0.722, para_vs_window_multi: 0.974, ml_vs_en_top1: 0.519, para_vs_window_top1: 0.869 },
+  { frame: 'institutional_procedural',      ml_vs_en_multi: 0.492, para_vs_window_multi: 0.412, ml_vs_en_top1: 0.217, para_vs_window_top1: 0.653 },
+]
+
+// ─── BERTopic clusters (ML model, Step 02) ───────────────────────────────────
+// Top clusters by document count; Topic -1 (outliers) and Topic 16 (Maltese)
+// excluded. Used to validate and refine security frames inductively.
+
+export const BERTOPIC_CLUSTERS = [
+  { id: 0,  count: 1719, label: 'Ukraine & Russia',             terms: ['ukraine', 'russia', 'putin', 'sanctions', 'defence', 'nato', 'military aggression'],    frames: ['military_defence'] },
+  { id: 2,  count: 775,  label: 'Israel–Gaza Conflict',         terms: ['israel', 'gaza', 'hamas', 'ceasefire', 'hostages', 'humanitarian', 'palestinians'],     frames: ['military_defence'] },
+  { id: 3,  count: 381,  label: 'Gender-Based Violence',        terms: ['women', 'gender', 'violence', 'equality', 'sexual violence', 'domestic violence'],      frames: ['gender_based_violence'] },
+  { id: 5,  count: 339,  label: 'China & Economic Coercion',    terms: ['china', 'hong kong', 'taiwan', 'beijing', 'trade', 'sanctions', 'human rights'],        frames: ['economic'] },
+  { id: 7,  count: 338,  label: 'Food & Agriculture',           terms: ['food security', 'farmers', 'agriculture', 'cap', 'pesticides', 'rural'],               frames: ['food_security'] },
+  { id: 8,  count: 312,  label: 'Migration & Asylum',           terms: ['migration', 'asylum pact', 'migrants', 'borders', 'returns', 'irregular'],              frames: ['border_migration'] },
+  { id: 9,  count: 286,  label: 'Energy Markets',               terms: ['energy prices', 'gas', 'electricity', 'renewables', 'fossil fuels', 'transition'],      frames: ['energy'] },
+  { id: 10, count: 251,  label: 'Health & COVID',               terms: ['pandemic', 'vaccines', 'medicines', 'patients', 'covid', 'pharmaceutical'],             frames: ['health'] },
+  { id: 11, count: 230,  label: 'NATO & European Defence',      terms: ['european defence', 'nato spending', 'pesco', 'capabilities', 'defence industry'],      frames: ['military_defence'] },
+  { id: 12, count: 229,  label: 'Iran: Sanctions & Women',      terms: ['iran', 'mahsa amini', 'irgc', 'women', 'sanctions', 'human rights'],                   frames: ['gender_based_violence'] },
+  { id: 13, count: 228,  label: 'Trade, Tariffs & Trump',       terms: ['trade coercion', 'tariffs', 'wto', 'transatlantic', 'trump', 'agreements'],            frames: ['economic'] },
+  { id: 15, count: 214,  label: 'Climate & Emissions',          terms: ['climate change', 'emissions', 'carbon', 'paris agreement', 'greenhouse gases'],        frames: ['environmental'] },
+  { id: 17, count: 204,  label: 'Russian Gas Dependency',       terms: ['russian gas', 'energy dependency', 'repowereu', 'oil imports', 'fossil fuels'],        frames: ['energy'] },
+  { id: 20, count: 182,  label: 'Spyware & Surveillance',       terms: ['spyware', 'pegasus', 'surveillance', 'national security', 'privacy', 'data protection'], frames: ['cyber'] },
+  { id: 26, count: 122,  label: 'Digital Services & DSA',       terms: ['dsa platforms', 'digital services', 'online content', 'tiktok', 'algorithms'],        frames: ['foreign_information_interference'] },
+  { id: 43, count: 62,   label: 'Organised Crime Networks',     terms: ['organised crime', 'drug trafficking', 'europol', 'trafficking', 'money laundering'],   frames: ['organised_crime'] },
+  { id: 47, count: 54,   label: 'Cyber Attacks & NIS2',         terms: ['cybersecurity', 'cyberattacks', 'cyber defence', 'nis2', 'enisa', 'infrastructure'],   frames: ['cyber'] },
+  { id: 48, count: 52,   label: 'Disinformation & Elections',   terms: ['disinformation', 'election interference', 'social media', 'fake news', 'musk'],       frames: ['foreign_information_interference'] },
+]
+
+// Word cloud data: [term, cluster_count, frame_id]
+export const WORD_CLOUD_DATA = [
+  ['ukraine', 1719, 'military_defence'], ['russia', 1719, 'military_defence'], ['nato', 1719, 'military_defence'],
+  ['sanctions', 1719, 'military_defence'], ['military aggression', 1719, 'military_defence'],
+  ['israel', 775, 'military_defence'], ['gaza', 775, 'military_defence'], ['hamas', 775, 'military_defence'],
+  ['ceasefire', 775, 'military_defence'],
+  ['women', 381, 'gender_based_violence'], ['gender violence', 381, 'gender_based_violence'],
+  ['domestic violence', 381, 'gender_based_violence'],
+  ['food security', 338, 'food_security'], ['farmers', 338, 'food_security'], ['agriculture', 338, 'food_security'],
+  ['migration', 312, 'border_migration'], ['asylum pact', 312, 'border_migration'],
+  ['returns', 312, 'border_migration'], ['irregular borders', 312, 'border_migration'],
+  ['energy prices', 286, 'energy'], ['gas', 286, 'energy'], ['renewables', 286, 'energy'],
+  ['pandemic', 251, 'health'], ['vaccines', 251, 'health'], ['medicines', 251, 'health'],
+  ['european defence', 230, 'military_defence'], ['pesco', 230, 'military_defence'], ['nato spending', 230, 'military_defence'],
+  ['iran', 229, 'gender_based_violence'], ['mahsa amini', 229, 'gender_based_violence'],
+  ['trade coercion', 228, 'economic'], ['tariffs', 228, 'economic'], ['wto', 228, 'economic'],
+  ['climate change', 214, 'environmental'], ['emissions', 214, 'environmental'], ['carbon', 214, 'environmental'],
+  ['russian gas', 204, 'energy'], ['energy dependency', 204, 'energy'], ['repowereu', 204, 'energy'],
+  ['spyware', 182, 'cyber'], ['pegasus', 182, 'cyber'], ['surveillance', 182, 'cyber'],
+  ['dsa platforms', 122, 'foreign_information_interference'], ['disinformation', 52, 'foreign_information_interference'],
+  ['election interference', 52, 'foreign_information_interference'],
+  ['organised crime', 62, 'organised_crime'], ['drug trafficking', 62, 'organised_crime'],
+  ['cybersecurity', 54, 'cyber'], ['nis2', 54, 'cyber'], ['cyberattacks', 54, 'cyber'],
 ]

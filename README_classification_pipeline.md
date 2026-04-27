@@ -1,7 +1,7 @@
 # Security Framing in the European Parliament
 
 Pipeline for analysing how security framing in EP debates has evolved since
-2019, following the approach of the UK / Bundestag migration framing project.
+2015 (EP8) / 2019 (EP9), following the approach of the UK / Bundestag migration framing project.
 
 ## Project layout on Google Drive
 

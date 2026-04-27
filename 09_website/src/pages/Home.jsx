@@ -27,20 +27,20 @@ const STATS = [
 ]
 
 const PIPELINE = [
-  { step: '01', icon: Globe,          label: 'Scraping',      desc: 'Full EP plenary verbatim records 1994–2026 via scrapy',              to: '/corpus' },
-  { step: '02', icon: Database,       label: 'Corpus Prep',   desc: 'Speaker classification, deduplication, language detection',          to: '/corpus' },
-  { step: '03', icon: Layers,         label: 'Topic Model',   desc: 'LDA/BERTopic latent topic discovery across 500k speeches',           to: '/topics' },
-  { step: '04', icon: Shield,         label: 'Frame Detection',desc: 'Sentence-level security frame classification (5 categories)',       to: '/security' },
-  { step: '05', icon: MessageSquare,  label: 'Sentiment',     desc: 'VADER compound scores across frames, parties and time',              to: '/sentiment' },
-  { step: '06', icon: Brain,          label: 'LLM Annotation',desc: 'GPT-4o zero-shot annotation for EU vs national framing & urgency',   to: '/llm' },
-  { step: '07', icon: Search,         label: 'Explorer',      desc: 'Interactive website with MEP lookup, filters and data download',     to: '/explorer' },
+  { step: '01', icon: Globe,          label: 'Scraping',        desc: 'Full EP plenary verbatim records 1994–2026 via scrapy',                          to: '/corpus' },
+  { step: '02', icon: Database,       label: 'Corpus Prep',     desc: 'Speaker classification, deduplication, language detection',                      to: '/corpus' },
+  { step: '03', icon: Layers,         label: 'Topic Clusters',  desc: 'BERTopic inductive clustering (EN + multilingual) to validate security frames',  to: '/topics' },
+  { step: '04', icon: Shield,         label: 'Frame Detection', desc: 'Paragraph-level zero-shot NLI classification into 13 security frames',           to: '/security' },
+  { step: '05', icon: MessageSquare,  label: 'Sentiment',       desc: 'VADER compound scores across frames, parties and time',                          to: '/sentiment' },
+  { step: '06', icon: Brain,          label: 'LLM Annotation',  desc: 'Claude Haiku structured annotation for EU vs national framing & urgency',        to: '/llm' },
+  { step: '07', icon: Search,         label: 'Explorer',        desc: 'Interactive website with MEP lookup, filters and data download',                 to: '/explorer' },
 ]
 
 const FINDINGS = [
-  { color: '#ef4444', tag: 'Key finding',  title: 'Ukraine 2022 → military discourse tripled',         body: 'Speeches coded as military/defence reached 36% of all security speeches in 2022–23, up from 11% in 2021. The shift was sharpest in Baltic and Polish delegations.' },
-  { color: '#3b82f6', tag: 'Key finding',  title: 'Cyber is the fastest-growing frame since 2013',    body: 'From under 2% of security speeches in 2010, cyber framing now accounts for 20%+ — a trajectory driven by EPP, Renew and Nordic delegations.' },
-  { color: '#f97316', tag: 'Key finding',  title: '2015–16 border security spike dwarfs 9/11',         body: 'The refugee crisis produced a border/migration security spike in the EP twice the size of the post-9/11 terrorism surge, and markedly more partisan.' },
-  { color: '#a855f7', tag: 'Key finding',  title: 'Sharp left–right divide in urgency scores',         body: 'ID/PfE and ECR speeches score 40% higher on urgency than S&D and Greens. The Left is most measured. Security rhetoric is a reliable ideological signal.' },
+  { color: '#3b82f6', tag: 'Key finding',  title: 'Economic security dominates EP security discourse',      body: 'Economic security accounts for ~43–46% of all top-1 frame assignments — stable across all years, driven by sanctions, trade coercion and supply-chain vulnerabilities.' },
+  { color: '#ef4444', tag: 'Key finding',  title: 'Military framing surges post-2022 Ukraine invasion',     body: 'Military defence rises from ~13% (2021) to ~19% (2025). The post-invasion shift represents the largest single-frame change in the observed 2019–2026 window.' },
+  { color: '#f59e0b', tag: 'Key finding',  title: 'Energy security nearly doubles from 2022 onward',        body: 'Energy security jumps from ~8% (pre-2022) to ~15% (2026), reflecting sustained European discourse on gas dependency, price shocks and the post-invasion energy crisis.' },
+  { color: '#14b8a6', tag: 'Key finding',  title: 'Health security: sharp COVID spike then rapid decline',  body: 'Health security peaks at 5–6% of top-1 frames in 2020–21 and falls below 1% as COVID recedes — a classic securitisation arc with a clear beginning and end.' },
 ]
 
 export default function Home() {
@@ -93,7 +93,7 @@ export default function Home() {
       {/* Key findings */}
       <section className="max-w-7xl mx-auto px-6 py-14">
         <h2 className="text-xl font-bold text-white mb-2">Key Findings</h2>
-        <p className="text-sm text-slate-500 mb-8">Preliminary results from placeholder analysis — will be updated as the pipeline completes.</p>
+        <p className="text-sm text-slate-500 mb-8">From the zero-shot NLI classification pipeline (EP9–10, 2019–2026). Country- and party-level breakdowns forthcoming.</p>
         <div className="grid sm:grid-cols-2 gap-4">
           {FINDINGS.map((f, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 * i + 0.2 }}
