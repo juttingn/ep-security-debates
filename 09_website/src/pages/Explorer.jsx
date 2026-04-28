@@ -97,7 +97,7 @@ function ProfilePanel({ entity, color, onClose }) {
       </div>
       <div className="p-5 grid sm:grid-cols-2 gap-5">
         <div>
-          <h3 className="text-sm font-semibold text-slate-900 mb-2">Frame Profile (multi-label %)</h3>
+          <h3 className="text-sm font-semibold text-slate-900 mb-2">Frame Profile (multi-label share)</h3>
           <ResponsiveContainer width="100%" height={260}>
             <BarChart data={bars} layout="vertical" margin={{ top: 0, right: 10, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={GRID} horizontal={false} />
@@ -172,7 +172,7 @@ function CountryTimeSeries({ countryName }) {
       className="card p-5 mt-4"
     >
       <h3 className="text-sm font-semibold text-slate-900 mb-0.5">Frame Distribution Over Time</h3>
-      <p className="text-xs text-gray-500 mb-4">Top-6 frames by average multi-label % · {countryName}</p>
+      <p className="text-xs text-gray-500 mb-4">Top-6 frames by average multi-label share: {countryName}</p>
       <ResponsiveContainer width="100%" height={210}>
         <LineChart data={chartData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" stroke={GRID} />
@@ -374,7 +374,7 @@ function ChoroplethMap({ onSelectCountry }) {
 
       {/* Legend */}
       <div className="px-5 py-3 border-t border-gray-100">
-        <p className="text-[10px] text-gray-400 mb-2 uppercase tracking-wider font-semibold">Dominant frame (top-1 by multi-label %)</p>
+        <p className="text-[10px] text-gray-400 mb-2 uppercase tracking-wider font-semibold">Dominant frame by multi-label share</p>
         <div className="flex flex-wrap gap-x-4 gap-y-1.5">
           {FRAMES.filter(f => f.id !== 'institutional_procedural').map(f => (
             <div key={f.id} className="flex items-center gap-1.5">
@@ -537,10 +537,11 @@ export default function Explorer() {
 
   return (
     <PT>
+      <div className="bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         <PageHeader
-          title="Country & Orientation Explorer"
-          subtitle="Browse security frame profiles for 28 national delegations or 6 political orientations. Select a country to see its full profile and how frames evolved year by year — or explore the map to compare dominant frames across Europe."
+          title="Country &amp; Orientation Explorer"
+          subtitle="Browse security frame profiles for 28 national delegations or 6 political orientations. Select a country to see its full profile and how frames evolved year by year, or explore the map to compare dominant frames across Europe."
           icon={Globe}
         />
 
@@ -609,7 +610,7 @@ export default function Explorer() {
             </div>
             {tab === 'orientation' && (
               <p className="text-[10px] text-gray-400 mt-3 italic px-1">
-                <strong className="not-italic text-gray-500">NI (Non-Inscrits)</strong> — MEPs unaffiliated with any EP political group. This category groups structurally diverse legislators whose only common attribute is the absence of group membership.
+                Non-Inscrits (NI) are Members of the European Parliament unaffiliated with any political group. This category groups structurally diverse legislators whose only common attribute is the absence of group membership.
               </p>
             )}
           </div>
@@ -664,8 +665,9 @@ export default function Explorer() {
         </div>
 
         <p className="text-[11px] text-gray-400 mt-6 italic">
-          All percentages are multi-label shares: a paragraph may be counted for multiple frames simultaneously. Dominant frame on the map is the highest multi-label % for that country and year. Years with fewer than 5 paragraphs are shown with available data.
+          All percentages are multi-label shares: a paragraph may be counted for multiple frames simultaneously. Dominant frame on the map is the highest multi-label share for that country and year. Years with fewer than 5 paragraphs are shown with available data.
         </p>
+      </div>
       </div>
     </PT>
   )
