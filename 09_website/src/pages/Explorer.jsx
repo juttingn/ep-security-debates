@@ -98,11 +98,11 @@ function ProfilePanel({ entity, color, onClose }) {
       <div className="p-5 grid sm:grid-cols-2 gap-5">
         <div>
           <h3 className="text-sm font-semibold text-slate-900 mb-2">Frame Profile (multi-label %)</h3>
-          <ResponsiveContainer width="100%" height={220}>
+          <ResponsiveContainer width="100%" height={260}>
             <BarChart data={bars} layout="vertical" margin={{ top: 0, right: 10, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={GRID} horizontal={false} />
               <XAxis type="number" tick={TICK} tickLine={false} axisLine={false} tickFormatter={v => `${v}%`} domain={[0, 100]} />
-              <YAxis type="category" dataKey="label" tick={TICK} tickLine={false} axisLine={false} width={78} />
+              <YAxis type="category" dataKey="label" tick={TICK} tickLine={false} axisLine={false} width={78} interval={0} />
               <Tooltip
                 content={({ active, payload }) => {
                   if (!active || !payload?.length) return null
