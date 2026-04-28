@@ -237,6 +237,7 @@ npm run build    # production build → dist/
 | Natalia F. | [@nataliaf01](https://github.com/nataliaf01) |
 | Michal K. | [@michalkolb01](https://github.com/michalkolb01) |
 | Chiara K. | [@chiarakahler](https://github.com/chiarakahler) |
+| Kenza Z. | [@kenzazakarya](https://github.com/kenzazakarya) |
 
 ---
 
