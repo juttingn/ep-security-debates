@@ -15,6 +15,11 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-14">
           <NavLink to="/" className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-0.5">
+              {[...Array(6)].map((_, i) => (
+                <span key={i} className="text-eu-gold text-[9px]">★</span>
+              ))}
+            </div>
             <span className="text-sm font-bold text-white leading-tight hidden sm:block">
               EP Security<br /><span className="text-slate-400 font-normal text-xs">Debates</span>
             </span>
