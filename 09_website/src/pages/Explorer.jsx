@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ComposableMap, Geographies, Geography } from 'react-simple-maps'
+import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   Cell, RadarChart, Radar, PolarGrid, PolarAngleAxis, LineChart, Line, Legend,
@@ -225,10 +225,14 @@ function CountryTimeSeries({ countryName }) {
 const YEARS = [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]
 
 function ChoroplethMap({ onSelectCountry }) {
-  const [year, setYear] = useState(2024)
+  const [year, setYear]       = useState(2024)
   const [tooltip, setTooltip] = useState(null)
+  const [zoom, setZoom]       = useState(1)
+  const [center, setCenter]   = useState([13, 52])
 
   const yearFrameMap = useMemo(() => buildYearFrameMap(year), [year])
+
+  function resetView() { setZoom(1); setCenter([13, 52]) }
 
   return (
     <div className="card overflow-hidden">
@@ -237,7 +241,7 @@ function ChoroplethMap({ onSelectCountry }) {
         <div className="flex items-center justify-between mb-2">
           <div>
             <h3 className="text-sm font-semibold text-slate-900">Dominant Security Frame by Country</h3>
-            <p className="text-xs text-gray-500">Click a country to explore its full frame profile</p>
+            <p className="text-xs text-gray-500">Click a country · scroll or pinch to zoom · drag to pan</p>
           </div>
           <span className="text-2xl font-extrabold text-slate-900">{year}</span>
         </div>
@@ -270,9 +274,7 @@ function ChoroplethMap({ onSelectCountry }) {
                 key={y}
                 onClick={() => setYear(y)}
                 className={`text-[10px] px-1.5 py-0.5 rounded font-mono transition-colors ${
-                  y === year
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-400 hover:text-gray-700'
+                  y === year ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-gray-700'
                 }`}
               >
                 {y}
@@ -283,64 +285,90 @@ function ChoroplethMap({ onSelectCountry }) {
       </div>
 
       {/* Map */}
-      <div className="relative bg-slate-50">
+      <div className="relative bg-slate-50 overflow-hidden">
+        {/* Zoom controls */}
+        <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
+          <button
+            onClick={() => setZoom(z => Math.min(z * 1.5, 12))}
+            className="w-7 h-7 bg-white border border-gray-200 rounded text-gray-500 hover:text-gray-800 hover:border-gray-300 flex items-center justify-center text-sm font-semibold shadow-sm"
+          >+</button>
+          <button
+            onClick={() => setZoom(z => Math.max(z / 1.5, 1))}
+            className="w-7 h-7 bg-white border border-gray-200 rounded text-gray-500 hover:text-gray-800 hover:border-gray-300 flex items-center justify-center text-sm font-semibold shadow-sm"
+          >−</button>
+          <button
+            onClick={resetView}
+            className="w-7 h-7 bg-white border border-gray-200 rounded text-gray-400 hover:text-gray-700 hover:border-gray-300 flex items-center justify-center shadow-sm"
+            title="Reset view"
+          >
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          </button>
+        </div>
+
         {tooltip && (
           <div
             className="absolute z-10 bg-white border border-gray-200 rounded-lg px-3 py-2 text-xs shadow-lg pointer-events-none"
-            style={{ left: tooltip.x + 12, top: tooltip.y - 40 }}
+            style={{ left: tooltip.x + 12, top: Math.max(8, tooltip.y - 40) }}
           >
             <span className="font-semibold text-slate-900">{tooltip.country}</span>
-            {tooltip.frame && (
-              <span className="ml-2" style={{ color: tooltip.frame.color }}>
-                {tooltip.frame.label}
-              </span>
-            )}
-            {!tooltip.frame && <span className="ml-2 text-gray-400">no data</span>}
+            {tooltip.frame
+              ? <span className="ml-2" style={{ color: tooltip.frame.color }}>{tooltip.frame.label}</span>
+              : <span className="ml-2 text-gray-400">no data</span>
+            }
           </div>
         )}
+
         <ComposableMap
           projection="geoMercator"
-          projectionConfig={{ scale: 860, center: [14, 54] }}
+          projectionConfig={{ scale: 560, center: [13, 52] }}
           width={800}
-          height={480}
+          height={500}
           style={{ width: '100%', height: 'auto' }}
         >
-          <Geographies geography={GEO_URL}>
-            {({ geographies }) =>
-              geographies.map(geo => {
-                const isoId       = parseInt(geo.id, 10)
-                const countryName = ISO_TO_COUNTRY[isoId]
-                const frameId     = countryName ? yearFrameMap[countryName] : null
-                const frame       = frameId ? FRAME_MAP[frameId] : null
-                const fill        = frame ? frame.color + 'cc' : (countryName ? '#d1d5db' : '#e5e7eb')
-                const isEU        = !!countryName
+          <ZoomableGroup
+            zoom={zoom}
+            center={center}
+            onMoveEnd={({ zoom: z, coordinates }) => { setZoom(z); setCenter(coordinates) }}
+            minZoom={1}
+            maxZoom={12}
+          >
+            <Geographies geography={GEO_URL}>
+              {({ geographies }) =>
+                geographies.map(geo => {
+                  const isoId       = parseInt(geo.id, 10)
+                  const countryName = ISO_TO_COUNTRY[isoId]
+                  const frameId     = countryName ? yearFrameMap[countryName] : null
+                  const frame       = frameId ? FRAME_MAP[frameId] : null
+                  const fill        = frame ? frame.color + 'cc' : (countryName ? '#d1d5db' : '#e5e7eb')
+                  const isEU        = !!countryName
 
-                return (
-                  <Geography
-                    key={geo.rsmKey}
-                    geography={geo}
-                    fill={fill}
-                    stroke="#ffffff"
-                    strokeWidth={isEU ? 0.8 : 0.3}
-                    style={{
-                      default: { outline: 'none', cursor: isEU ? 'pointer' : 'default' },
-                      hover:   { outline: 'none', fill: isEU ? (frame ? frame.color : '#94a3b8') : fill, opacity: isEU ? 0.85 : 1 },
-                      pressed: { outline: 'none' },
-                    }}
-                    onClick={() => isEU && onSelectCountry(countryName)}
-                    onMouseEnter={evt => {
-                      if (!isEU) return
-                      const rect = evt.target.closest('svg')?.getBoundingClientRect()
-                      const x = evt.clientX - (rect?.left ?? 0)
-                      const y = evt.clientY - (rect?.top ?? 0)
-                      setTooltip({ country: countryName, frame, x, y })
-                    }}
-                    onMouseLeave={() => setTooltip(null)}
-                  />
-                )
-              })
-            }
-          </Geographies>
+                  return (
+                    <Geography
+                      key={geo.rsmKey}
+                      geography={geo}
+                      fill={fill}
+                      stroke="#ffffff"
+                      strokeWidth={isEU ? 0.8 / zoom : 0.3 / zoom}
+                      style={{
+                        default: { outline: 'none', cursor: isEU ? 'pointer' : 'default' },
+                        hover:   { outline: 'none', fill: isEU ? (frame ? frame.color : '#94a3b8') : fill, opacity: isEU ? 0.85 : 1 },
+                        pressed: { outline: 'none' },
+                      }}
+                      onClick={() => isEU && onSelectCountry(countryName)}
+                      onMouseEnter={evt => {
+                        if (!isEU) return
+                        const rect = evt.target.closest('svg')?.getBoundingClientRect()
+                        const x = evt.clientX - (rect?.left ?? 0)
+                        const y = evt.clientY - (rect?.top ?? 0)
+                        setTooltip({ country: countryName, frame, x, y })
+                      }}
+                      onMouseLeave={() => setTooltip(null)}
+                    />
+                  )
+                })
+              }
+            </Geographies>
+          </ZoomableGroup>
         </ComposableMap>
       </div>
 
