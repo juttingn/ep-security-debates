@@ -6,7 +6,7 @@ import {
   Cell, RadarChart, Radar, PolarGrid, PolarAngleAxis, LineChart, Line, Legend,
 } from 'recharts'
 import { Globe, Users, X, Search, ChevronLeft, ChevronRight } from 'lucide-react'
-import { COUNTRIES, ORIENTATION_TOTALS, ORIENTATIONS, FRAMES, CY_MULTI } from '../data/placeholder'
+import { COUNTRIES, ORIENTATION_TOTALS, ORIENTATIONS, FRAMES, CY_MULTI } from '../data/ep_data'
 import { PageHeader } from '../components/ui'
 
 const GEO_URL = `${import.meta.env.BASE_URL}world-110m.json`

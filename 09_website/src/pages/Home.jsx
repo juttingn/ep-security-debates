@@ -185,7 +185,7 @@ export default function Home() {
               },
               {
                 title: 'Paragraph-level unit',
-                body: 'Segmenting by blank-line paragraph (at least 450 characters) means that short interjections and procedural remarks are excluded. Some speeches may be split across frames that would cohere as a single argumentative unit.',
+                body: 'Speeches are segmented at blank-line breaks. Segments shorter than 450 characters are not excluded — they are merged with the subsequent segment at the sentence boundary, so all text is retained. However, merged segments may span two argumentative units and not always form a coherent single argument.',
               },
               {
                 title: 'Cross-term comparison',

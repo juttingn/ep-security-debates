@@ -1,6 +1,6 @@
 import { Filter, X } from 'lucide-react'
 import { useFilters } from '../context/FilterContext'
-import { COUNTRIES, ORIENTATIONS } from '../data/placeholder'
+import { COUNTRIES, ORIENTATIONS } from '../data/ep_data'
 
 export default function FilterBar() {
   const { country, orientation, setFilter, resetFilters } = useFilters()

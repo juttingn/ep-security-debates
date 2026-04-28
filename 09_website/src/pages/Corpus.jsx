@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { Database } from 'lucide-react'
 import { useFilters } from '../context/FilterContext'
-import { TOP1_YEARLY, COUNTRIES, ORIENTATION_TOTALS, ORIENTATIONS, FRAMES } from '../data/placeholder'
+import { TOP1_YEARLY, COUNTRIES, ORIENTATION_TOTALS, ORIENTATIONS, FRAMES } from '../data/ep_data'
 import { PageHeader, StatCard, ChartCard, CustomTooltip } from '../components/ui'
 
 const PT = ({ children }) => (

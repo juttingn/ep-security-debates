@@ -5,7 +5,7 @@ import {
   Tooltip, ResponsiveContainer, Cell, Legend,
 } from 'recharts'
 import { Shield, ChevronDown, ChevronUp } from 'lucide-react'
-import { FRAMES, TOP1_YEARLY, MULTILABEL_YEARLY, FRAME_DEFINITIONS, FRAME_LITERATURE, ROBUSTNESS_TABLE } from '../data/placeholder'
+import { FRAMES, TOP1_YEARLY, MULTILABEL_YEARLY, FRAME_DEFINITIONS, FRAME_LITERATURE, ROBUSTNESS_TABLE } from '../data/ep_data'
 import { PageHeader, StatCard, ChartCard, CustomTooltip } from '../components/ui'
 
 const PT = ({ children }) => (
@@ -196,7 +196,7 @@ export default function SecurityFrames() {
                   <BarChart data={TOP1_YEARLY} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={GRID} />
                     <XAxis dataKey="year" tick={TICK} tickLine={false} axisLine={ALINE} />
-                    <YAxis tick={TICK} tickLine={false} axisLine={false} tickFormatter={v => `${v}%`} domain={[0, 100]} />
+                    <YAxis tick={TICK} tickLine={false} axisLine={false} tickFormatter={v => `${Math.round(v)}%`} domain={[0, 100]} />
                     <Tooltip content={<Top1Tooltip />} />
                     {FRAMES.map(f => <Bar key={f.id} dataKey={f.id} name={f.label} stackId="1" fill={f.color} />)}
                   </BarChart>
@@ -218,7 +218,7 @@ export default function SecurityFrames() {
                   <LineChart data={MULTILABEL_YEARLY} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={GRID} />
                     <XAxis dataKey="year" tick={TICK} tickLine={false} axisLine={ALINE} />
-                    <YAxis tick={TICK} tickLine={false} axisLine={false} tickFormatter={v => `${v}%`} domain={[0, 100]} />
+                    <YAxis tick={TICK} tickLine={false} axisLine={false} tickFormatter={v => `${Math.round(v)}%`} domain={[0, 100]} />
                     <Tooltip content={<CustomTooltip />} />
                     {ML_LINES.map(id => {
                       const f = FRAME_MAP[id]

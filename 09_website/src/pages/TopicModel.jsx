@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Layers } from 'lucide-react'
-import { BERTOPIC_CLUSTERS, WORD_CLOUD_DATA, FRAMES } from '../data/placeholder'
+import { BERTOPIC_CLUSTERS, WORD_CLOUD_DATA, FRAMES } from '../data/ep_data'
 import { PageHeader, StatCard } from '../components/ui'
 
 const PT = ({ children }) => (
