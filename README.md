@@ -53,26 +53,26 @@ Corpus: **37,201 security-labelled paragraphs** across **28 national delegations
 
 ## Pipeline overview
 
-The pipeline lives on Google Drive (see [`README_classification_pipeline.md`](README_classification_pipeline.md) for the full file layout). The five stages are:
+The classification scripts live on [Google Drive](https://drive.google.com/drive/folders/1oUIqaypIW2Cz_0lZ4P3UhrYXNlsLfdko) — see [`README_classification_pipeline.md`](README_classification_pipeline.md) for the full file layout. The five stages are:
 
 ```
-EP_Security_Debates_Scraper (22April).R     ← scrape EP plenary records
+EP_Security_Debates_Scraper (22April).R     ← scrape EP plenary records  [in repo]
         ↓
    corpus_ep_security_CLEAN.xlsx
         ↓
-00_translate.py                              ← optional EN translation for robustness
-01_segment_units.py                          ← paragraph / sentence / context-window segmentation
+00_translate.py                              ← optional EN translation for robustness  [Google Drive]
+01_segment_units.py                          ← paragraph / sentence / context-window segmentation  [Google Drive]
         ↓
-02a_bertopic_english.py                      ← BERTopic (EN)
-02b_bertopic_multilingual.py                 ← BERTopic (ML) ← main topic model
+02a_bertopic_english.py                      ← BERTopic (EN)  [Google Drive]
+02b_bertopic_multilingual.py                 ← BERTopic (ML) ← main topic model  [Google Drive]
         ↓
-03_classify_frames_zeroshot.py               ← mDeBERTa-v3 zero-shot NLI, 13 frames
+03_classify_frames_zeroshot.py               ← mDeBERTa-v3 zero-shot NLI, 13 frames  [Google Drive]
         ↓
    frames_classified_para_ML_enriched.csv
         ↓
-04_robustness_checks.py                      ← translation + granularity correlation checks
+04_robustness_checks.py                      ← translation + granularity correlation checks  [Google Drive]
         ↓
-09_website/                                  ← React + Recharts interactive explorer
+09_website/                                  ← React + Recharts interactive explorer  [in repo]
 ```
 
 ---
@@ -83,7 +83,7 @@ EP_Security_Debates_Scraper (22April).R     ← scrape EP plenary records
 
 The European Parliament publishes verbatim records of all plenary debates at
 [europarl.europa.eu](https://www.europarl.europa.eu/plenary/en/debates-video.html).
-The scraper (`EP_Security_Debates_Scraper (22April).R`) collects full speech
+The scraper ([`EP_Security_Debates_Scraper (22April).R`](EP_Security_Debates_Scraper%20(22April).R)) collects full speech
 texts alongside structured metadata: speaker name, national delegation, EP
 political group, date, legislative period, and agenda item. The corpus covers
 EP9 (July 2019–June 2024) and EP10 (July 2024–early 2026).
@@ -100,15 +100,15 @@ across EP9 and EP10 (accounting for group renames, e.g. ID → PfE). The unit
 of analysis is the **paragraph** (blank-line delimited, minimum 450 characters;
 shorter units are merged with the next).
 
-An optional translation step (`00_translate.py`) produces an English version of
+An optional translation step (`00_translate.py`, Google Drive) produces an English version of
 all speeches for the translation robustness check.
 
 ### Step 3 — Topic modelling (BERTopic)
 
 With no prior assumptions about what "security" encompasses, BERTopic maps the
 latent topical structure of security-filtered speeches using sentence-transformer
-embeddings → UMAP → HDBSCAN. Two variants were run: (a) multilingual (`02b`,
-source language), (b) English-translated (`02a`). The multilingual variant is
+embeddings → UMAP → HDBSCAN. Two variants were run: (a) multilingual (`02b_bertopic_multilingual.py`,
+source language), (b) English-translated (`02a_bertopic_english.py`). The multilingual variant is
 the main specification. 53 coherent topics were identified; Topic -1 (outlier
 noise) and Topic 16 (Maltese-dominated, distorts ML model) were excluded.
 
@@ -176,23 +176,16 @@ A React + Recharts application lets users explore the annotated corpus:
 
 ## Project structure
 
-```
-.
-├── EP_Security_Debates_Scraper (22April).R    # Scraper: EP plenary records (R / rvest)
-├── security_framing_classification_pipeline.ipynb  # Classification notebook
-├── README_classification_pipeline.md          # Full pipeline file layout (Google Drive)
-├── 09_website/                                # React interactive explorer
-│   ├── src/
-│   │   ├── data/placeholder.js               # All analysis data
-│   │   ├── pages/                            # One component per analysis step
-│   │   └── components/
-│   └── package.json
-└── assets/
-    └── ep_debate.jpg
-```
+| File | Description |
+|---|---|
+| [`EP_Security_Debates_Scraper (22April).R`](EP_Security_Debates_Scraper%20(22April).R) | Scraper: EP plenary records (R / rvest) |
+| [`security_framing_classification_pipeline.ipynb`](security_framing_classification_pipeline.ipynb) | Classification notebook (Colab) |
+| [`README_classification_pipeline.md`](README_classification_pipeline.md) | Full pipeline file layout and Google Drive structure |
+| [`09_website/`](09_website/) | React + Recharts interactive explorer |
+| [`09_website/src/data/placeholder.js`](09_website/src/data/placeholder.js) | All analysis data (frames, yearly trends, country/orientation totals) |
 
-The full classification pipeline (scripts, data, model outputs) lives on
-Google Drive:
+The classification scripts (`00_translate.py` → `04_robustness_checks.py`) and
+data files live on Google Drive:
 [classification\_pipeline\_security\_framing](https://drive.google.com/drive/folders/1oUIqaypIW2Cz_0lZ4P3UhrYXNlsLfdko)
 
 ---
