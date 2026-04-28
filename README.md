@@ -161,7 +161,7 @@ choices:
 The multi-label paragraph specification is the preferred and reported
 specification.
 
-### Step 6 — Interactive website ([`09_website/`](09_website/))
+### Step 6 — Interactive website ([live site](https://juttingn.github.io/ep-security-debates/) · [`09_website/`](09_website/))
 
 A React + Recharts application lets users explore the annotated corpus:
 
