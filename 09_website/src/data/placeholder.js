@@ -22,10 +22,10 @@ export const FRAMES = [
 export const ORIENTATIONS = [
   { id: 'Far-Left',  label: 'Far-Left',  color: '#b91c1c', total: 3294  },
   { id: 'Left',      label: 'Left',      color: '#ef4444', total: 10409 },
-  { id: 'Center',    label: 'Center',    color: '#f59e0b', total: 4913  },
-  { id: 'NI',        label: 'NI',        color: '#64748b', total: 1308  },
+  { id: 'Center',    label: 'Center',    color: '#94a3b8', total: 4913  },
   { id: 'Right',     label: 'Right',     color: '#3b82f6', total: 13589 },
   { id: 'Far-Right', label: 'Far-Right', color: '#1d4ed8', total: 3688  },
+  { id: 'NI',        label: 'NI',        color: '#64748b', total: 1308  },
 ]
 
 export const COUNTRIES = [
@@ -62,10 +62,10 @@ export const COUNTRIES = [
 export const ORIENTATION_TOTALS = [
   { orientation: 'Far-Left',  color: '#b91c1c', total: 3294,  military_defence: 1787, border_migration: 2366, terrorism: 2214, organised_crime: 993,  cyber: 496,  foreign_information_interference: 365,  energy: 2470, economic: 2917, environmental: 190, health: 312, gender_based_violence: 1157, food_security: 908,  institutional_procedural: 130 },
   { orientation: 'Left',      color: '#ef4444', total: 10409, military_defence: 5654, border_migration: 7558, terrorism: 6721, organised_crime: 2241, cyber: 1610, foreign_information_interference: 1050, energy: 6872, economic: 8890, environmental: 418, health: 919, gender_based_violence: 3199, food_security: 2132, institutional_procedural: 195 },
-  { orientation: 'Center',    color: '#f59e0b', total: 4913,  military_defence: 2737, border_migration: 3438, terrorism: 3444, organised_crime: 1117, cyber: 887,  foreign_information_interference: 530,  energy: 3248, economic: 4286, environmental: 96,  health: 407, gender_based_violence: 1398, food_security: 1062, institutional_procedural: 96  },
-  { orientation: 'NI',        color: '#64748b', total: 1308,  military_defence: 700,  border_migration: 924,  terrorism: 819,  organised_crime: 311,  cyber: 206,  foreign_information_interference: 183,  energy: 959,  economic: 1150, environmental: 54,  health: 117, gender_based_violence: 410,  food_security: 322,  institutional_procedural: 40  },
+  { orientation: 'Center',    color: '#94a3b8', total: 4913,  military_defence: 2737, border_migration: 3438, terrorism: 3444, organised_crime: 1117, cyber: 887,  foreign_information_interference: 530,  energy: 3248, economic: 4286, environmental: 96,  health: 407, gender_based_violence: 1398, food_security: 1062, institutional_procedural: 96  },
   { orientation: 'Right',     color: '#3b82f6', total: 13589, military_defence: 7927, border_migration: 9452, terrorism: 9085, organised_crime: 2896, cyber: 2219, foreign_information_interference: 1264, energy: 8704, economic: 11574,environmental: 452, health: 1312,gender_based_violence: 3847, food_security: 3100, institutional_procedural: 247 },
   { orientation: 'Far-Right', color: '#1d4ed8', total: 3688,  military_defence: 1959, border_migration: 2719, terrorism: 1671, organised_crime: 811,  cyber: 412,  foreign_information_interference: 454,  energy: 2431, economic: 2938, environmental: 213, health: 302, gender_based_violence: 1237, food_security: 707,  institutional_procedural: 196 },
+  { orientation: 'NI',        color: '#64748b', total: 1308,  military_defence: 700,  border_migration: 924,  terrorism: 819,  organised_crime: 311,  cyber: 206,  foreign_information_interference: 183,  energy: 959,  economic: 1150, environmental: 54,  health: 117, gender_based_violence: 410,  food_security: 322,  institutional_procedural: 40  },
 ]
 
 // ─── Top-1 dominant frame shares by year (2019–2026) ─────────────────────────

@@ -173,7 +173,7 @@ export default function SecurityFrames() {
                 <LineChart data={MULTILABEL_YEARLY} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke={GRID} />
                   <XAxis dataKey="year" tick={TICK} tickLine={false} axisLine={ALINE} />
-                  <YAxis tick={TICK} tickLine={false} axisLine={false} tickFormatter={v => `${v}%`} />
+                  <YAxis tick={TICK} tickLine={false} axisLine={false} tickFormatter={v => `${v}%`} domain={[0, 100]} />
                   <Tooltip content={<CustomTooltip />} />
                   {ML_LINES.map(id => {
                     const f = FRAME_MAP[id]

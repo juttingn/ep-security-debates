@@ -40,6 +40,8 @@ const FINDINGS = [
   { color: '#dc2626', title: 'Military framing surges post-2022 Ukraine invasion',    body: 'Military defence rises from ~13% (2021) to ~19% (2025). The post-invasion shift represents the largest single-frame change in the 2019–2026 window.' },
   { color: '#d97706', title: 'Energy security nearly doubles from 2022 onward',       body: 'Energy security jumps from ~8% (pre-2022) to ~15% (2026), reflecting sustained European discourse on gas dependency, price shocks and the post-invasion energy crisis.' },
   { color: '#0d9488', title: 'Health security: sharp COVID spike then rapid decline', body: 'Health security peaks at 5–6% of top-1 frames in 2020–21 and falls below 1% as COVID recedes — a classic securitisation arc with a clear beginning and end.' },
+  { color: '#7c3aed', title: 'Eastern delegations drive military and threat framing', body: 'Baltic states (Estonia, Latvia, Lithuania) and Poland show the highest military frame shares — reflecting geographic proximity to Russia and strong NATO orientations. Mediterranean delegations (Italy, Spain, Malta) rank higher on border/migration and organised crime.' },
+  { color: '#0369a1', title: 'Right-wing MEPs dominate security discourse by volume', body: 'The Right and Far-Right together account for ~47% of all security-labelled paragraphs. Left-wing MEPs proportionally emphasise gender-based violence and health security; right-wing MEPs emphasise border/migration and military defence.' },
 ]
 
 export default function Home() {
@@ -158,6 +160,73 @@ export default function Home() {
                 </Link>
               </motion.div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Limitations & Future Research */}
+      <section className="border-b border-gray-200 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-6 py-16">
+          <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 mb-3">Limitations & Future Research</p>
+          <h2 className="text-3xl font-extrabold text-slate-900 mb-2">What This Study Cannot Tell You</h2>
+          <p className="text-sm text-gray-500 mb-10">Honest accounting of methodological constraints and directions for follow-up.</p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+            {[
+              {
+                title: 'EP plenary only',
+                body: 'The corpus covers verbatim plenary records only. Committee debates, written questions, and informal inter-group negotiations — where much of the real bargaining over security policy happens — are not included.',
+              },
+              {
+                title: 'Zero-shot classification limits',
+                body: 'The mDeBERTa-v3 NLI classifier assigns frames without any fine-tuning on EP text. While robustness checks confirm broad reliability (≥0.72 cross-specification correlations), low-frequency frames (environmental, food, cyber) show weaker consistency.',
+              },
+              {
+                title: 'Paragraph-level unit',
+                body: 'Segmenting by blank-line paragraph (≥450 chars) means that short interjections and procedural remarks are excluded. Some speeches may be split across frames that would cohere as a single argumentative unit.',
+              },
+              {
+                title: 'Cross-legislative-term comparison',
+                body: 'EP9 and EP10 have different group compositions — in particular the renaming of ID to Patriots for Europe (PfE) and the emergence of the European Conservatives. Some shifts in frame shares may partly reflect membership changes rather than opinion change.',
+              },
+              {
+                title: 'No speaker-level analysis',
+                body: 'All results are aggregated to national delegation or political orientation level. Individual MEP positions, seniority effects, and committee roles are not modelled — a natural next step for a speaker-level study.',
+              },
+              {
+                title: 'Binary security labelling',
+                body: 'The pre-filtering step uses keyword matching to identify security-relevant speeches. Speeches that invoke security implicitly (without using explicit security vocabulary) are excluded from the corpus.',
+              },
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.08 * i + 0.1 }}
+                className="bg-white border border-gray-200 rounded-xl p-5"
+              >
+                <h3 className="text-sm font-bold text-slate-900 mb-2">{item.title}</h3>
+                <p className="text-sm text-gray-600 leading-relaxed">{item.body}</p>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="bg-white border border-blue-100 rounded-xl p-6">
+            <h3 className="text-base font-bold text-slate-900 mb-3">Future direction: LLM-based deep classification</h3>
+            <p className="text-sm text-gray-600 leading-relaxed mb-4">
+              To unpack further details of the debates — such as the specific threat actors named, the policy instruments proposed, or the rhetorical strategies used to legitimise security claims — one natural extension is to apply large language model (LLM) classification at the paragraph level. This would allow researchers to move beyond frame detection toward a richer characterisation of <em>how</em> security is argued, not just <em>what</em> frame is invoked.
+            </p>
+            <p className="text-sm text-gray-600 leading-relaxed mb-4">
+              A shell script implementing an LLM-classification pipeline for EP security paragraphs is available in the project repository. It was not applied as part of this project due to time and monetary constraints, but may be useful for researchers wishing to extend the analysis.
+            </p>
+            <a
+              href="https://github.com/juttingn/ep-security-debates"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-700 text-white text-xs font-semibold rounded-lg transition-colors"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
+              View on GitHub — ep-security-debates
+            </a>
           </div>
         </div>
       </section>

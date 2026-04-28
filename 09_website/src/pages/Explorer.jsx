@@ -101,8 +101,8 @@ function ProfilePanel({ entity, color, onClose }) {
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={bars} layout="vertical" margin={{ top: 0, right: 10, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={GRID} horizontal={false} />
-              <XAxis type="number" tick={TICK} tickLine={false} axisLine={false} tickFormatter={v => `${v}%`} />
-              <YAxis type="category" dataKey="label" tick={TICK} tickLine={false} axisLine={false} width={60} />
+              <XAxis type="number" tick={TICK} tickLine={false} axisLine={false} tickFormatter={v => `${v}%`} domain={[0, 100]} />
+              <YAxis type="category" dataKey="label" tick={TICK} tickLine={false} axisLine={false} width={78} />
               <Tooltip
                 content={({ active, payload }) => {
                   if (!active || !payload?.length) return null
@@ -392,6 +392,104 @@ function ChoroplethMap({ onSelectCountry }) {
   )
 }
 
+// ── Frame × Country time series (shown below map when no country selected) ──
+const TOP10_COUNTRIES = COUNTRIES.slice(0, 10).map(c => c.country)
+
+const COUNTRY_LINE_COLORS = [
+  '#3b82f6', '#ef4444', '#22c55e', '#f97316', '#8b5cf6',
+  '#14b8a6', '#f59e0b', '#ec4899', '#06b6d4', '#84cc16',
+]
+
+function FrameCountryTimeSeries() {
+  const [selectedFrame, setSelectedFrame] = useState('military_defence')
+
+  const chartData = useMemo(() => {
+    const years = [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]
+    return years.map(year => {
+      const point = { year }
+      TOP10_COUNTRIES.forEach(name => {
+        const row = CY_MULTI.find(r => r.country === name && r.year === year)
+        point[name] = row ? row[selectedFrame] : null
+      })
+      return point
+    })
+  }, [selectedFrame])
+
+  const frameInfo = FRAME_MAP[selectedFrame]
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.25 }}
+      className="card p-5 mt-4"
+    >
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <div>
+          <h3 className="text-sm font-semibold text-slate-900">Frame Trends by Country</h3>
+          <p className="text-xs text-gray-500 mt-0.5">Multi-label % over time · top-10 delegations by corpus size</p>
+        </div>
+        <select
+          value={selectedFrame}
+          onChange={e => setSelectedFrame(e.target.value)}
+          className="bg-white border border-gray-200 text-gray-700 text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-blue-400"
+        >
+          {FRAMES.filter(f => f.id !== 'institutional_procedural').map(f => (
+            <option key={f.id} value={f.id}>{f.label}</option>
+          ))}
+        </select>
+      </div>
+      <ResponsiveContainer width="100%" height={230}>
+        <LineChart data={chartData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke={GRID} />
+          <XAxis dataKey="year" tick={TICK} tickLine={false} axisLine={false} />
+          <YAxis tick={TICK} tickLine={false} axisLine={false} tickFormatter={v => `${v}%`} domain={[0, 100]} />
+          <Tooltip
+            content={({ active, payload, label }) => {
+              if (!active || !payload?.length) return null
+              const sorted = [...payload].filter(p => p.value != null).sort((a, b) => b.value - a.value)
+              return (
+                <div className="bg-white border border-gray-200 rounded-lg p-2.5 text-xs shadow-lg min-w-[160px]">
+                  <p className="font-semibold text-slate-900 mb-1.5">{label}</p>
+                  {sorted.map(p => (
+                    <div key={p.dataKey} className="flex justify-between gap-4">
+                      <span style={{ color: p.stroke }}>{p.dataKey}</span>
+                      <span className="text-gray-600">{p.value}%</span>
+                    </div>
+                  ))}
+                </div>
+              )
+            }}
+          />
+          {TOP10_COUNTRIES.map((name, i) => (
+            <Line
+              key={name}
+              type="monotone"
+              dataKey={name}
+              stroke={COUNTRY_LINE_COLORS[i]}
+              strokeWidth={1.5}
+              dot={false}
+              activeDot={{ r: 3 }}
+              connectNulls={false}
+            />
+          ))}
+        </LineChart>
+      </ResponsiveContainer>
+      <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2">
+        {TOP10_COUNTRIES.map((name, i) => {
+          const c = COUNTRIES.find(x => x.country === name)
+          return (
+            <div key={name} className="flex items-center gap-1">
+              <span className="w-2 h-2 rounded-full shrink-0" style={{ background: COUNTRY_LINE_COLORS[i] }} />
+              <span className="text-[10px] text-gray-500">{c?.flag ?? ''} {name}</span>
+            </div>
+          )
+        })}
+      </div>
+    </motion.div>
+  )
+}
+
 // ── Page transition wrapper ─────────────────────────────────────────────────
 const PT = ({ children }) => (
   <motion.div initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 8 }} transition={{ duration: 0.3 }}>
@@ -412,10 +510,12 @@ export default function Explorer() {
     [query]
   )
 
-  const orientList = useMemo(() =>
-    ORIENTATION_TOTALS.filter(o => query === '' || o.orientation.toLowerCase().includes(query.toLowerCase())),
-    [query]
-  )
+  const orientList = useMemo(() => {
+    const NI_LAST = id => id === 'NI' ? 1 : 0
+    return ORIENTATION_TOTALS
+      .filter(o => query === '' || o.orientation.toLowerCase().includes(query.toLowerCase()))
+      .sort((a, b) => NI_LAST(a.orientation) - NI_LAST(b.orientation))
+  }, [query])
 
   const list    = tab === 'country' ? countryList : orientList
   const selKey  = tab === 'country' ? 'country' : 'orientation'
@@ -477,7 +577,8 @@ export default function Explorer() {
 
         <div className="grid lg:grid-cols-5 gap-6">
           {/* Left: entity list */}
-          <div className="lg:col-span-2 space-y-1.5 max-h-[720px] overflow-y-auto pr-1">
+          <div className="lg:col-span-2">
+            <div className="space-y-1.5 max-h-[720px] overflow-y-auto pr-1">
             {list.map((item, i) => {
               const name      = item[selKey]
               const flag      = item.flag ?? null
@@ -505,6 +606,12 @@ export default function Explorer() {
                 </motion.button>
               )
             })}
+            </div>
+            {tab === 'orientation' && (
+              <p className="text-[10px] text-gray-400 mt-3 italic px-1">
+                <strong className="not-italic text-gray-500">NI (Non-Inscrits)</strong> — MEPs unaffiliated with any EP political group. This category groups structurally diverse legislators whose only common attribute is the absence of group membership.
+              </p>
+            )}
           </div>
 
           {/* Right: detail panel */}
@@ -539,6 +646,7 @@ export default function Explorer() {
                     const entity = COUNTRIES.find(c => c.country === name)
                     if (entity) setSelected(entity)
                   }} />
+                  <FrameCountryTimeSeries />
                 </motion.div>
               ) : (
                 <motion.div

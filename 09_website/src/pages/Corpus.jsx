@@ -112,7 +112,7 @@ export default function Corpus() {
                         animate={{ width: `${(c.total / countryData[0].total) * 100}%` }}
                         transition={{ delay: i * 0.015 + 0.2, duration: 0.5 }}
                         className="h-full rounded"
-                        style={{ background: c.highlight ? '#f59e0b' : (f?.color ?? '#3b82f6') }}
+                        style={{ background: c.highlight ? '#f59e0b' : '#3b82f6' }}
                       />
                     </div>
                     <div className="w-14 text-right text-gray-500">{c.total.toLocaleString()}</div>
