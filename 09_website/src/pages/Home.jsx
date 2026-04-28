@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowRight, Database, Layers, Shield, Globe } from 'lucide-react'
+import epDebateImg from '../assets/ep_debate.jpg'
 
 function AnimatedCounter({ target, duration = 1800 }) {
   const [val, setVal] = useState(0)
@@ -85,17 +86,26 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Research motivation — above key findings */}
+      {/* Research motivation */}
       <section className="border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-6 py-16">
-          <div className="max-w-3xl">
-            <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 mb-3">Research Questions</p>
-            <h2 className="text-3xl font-extrabold text-slate-900 mb-6">Why does security framing in the EP matter?</h2>
-            <div className="space-y-4 text-base text-gray-600 leading-relaxed">
-              <p>This project grows out of a shared interest in the <strong className="text-slate-800">political economy of security in the European Union</strong> — and in particular, the contested nature of what "security" means inside Europe's core deliberative institution.</p>
-              <p>Security has never been a stable concept in EU politics. From migration debates recast as border threats to the post-2022 resurgence of hard defence, the EP's plenary debates offer a longitudinal record of how security frames emerge, compete, and shift across a period of extraordinary geopolitical turbulence.</p>
-              <p>By combining web scraping, topic modelling, and zero-shot NLI classification, we map how security discourse has evolved across <strong className="text-slate-800">two parliamentary terms (EP9–10, 2019–2026)</strong>, identifying the role of crises, elections, and ideological cleavages in shaping what European legislators say — and don't say — about security.</p>
-            </div>
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+              <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 mb-3">Research Questions</p>
+              <h2 className="text-3xl font-extrabold text-slate-900 mb-6">Why does security framing in the EP matter?</h2>
+              <div className="space-y-4 text-base text-gray-600 leading-relaxed">
+                <p>This project grows out of a shared interest in the <strong className="text-slate-800">political economy of security in the European Union</strong> — and in particular, the contested nature of what "security" means inside Europe's core deliberative institution.</p>
+                <p>Security has never been a stable concept in EU politics. From migration debates recast as border threats to the post-2022 resurgence of hard defence, the EP's plenary debates offer a longitudinal record of how security frames emerge, compete, and shift across a period of extraordinary geopolitical turbulence.</p>
+                <p>By combining web scraping, topic modelling, and zero-shot NLI classification, we map how security discourse has evolved across <strong className="text-slate-800">two parliamentary terms (EP9–10, 2019–2026)</strong>, identifying the role of crises, elections, and ideological cleavages in shaping what European legislators say — and don't say — about security.</p>
+              </div>
+            </motion.div>
+            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+              <img
+                src={epDebateImg}
+                alt="MEPs debating in the European Parliament"
+                className="rounded-xl shadow-lg w-full object-cover"
+              />
+            </motion.div>
           </div>
         </div>
       </section>
@@ -132,16 +142,19 @@ export default function Home() {
           <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 mb-3">Methodology</p>
           <h2 className="text-3xl font-extrabold text-slate-900 mb-2">Analysis Pipeline</h2>
           <p className="text-sm text-gray-500 mb-10">Five steps from raw HTML to interactive visualisation.</p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-5">
             {PIPELINE.map(({ step, icon: Icon, label, desc, to }, i) => (
               <motion.div key={step} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 * i + 0.1 }}>
-                <Link to={to} className="block bg-white border border-gray-200 rounded-xl p-5 hover:border-blue-300 hover:shadow-md transition-all h-full group">
-                  <div className="flex items-center gap-2 mb-4">
-                    <span className="text-xs font-mono text-gray-400">{step}</span>
-                    <Icon size={14} className="text-blue-600 group-hover:text-blue-700" />
+                <Link to={to} className="flex flex-col bg-white border border-gray-200 rounded-xl p-6 hover:border-blue-400 hover:shadow-md transition-all h-full group">
+                  <div className="flex items-center gap-3 mb-5">
+                    <span className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center text-xs font-bold text-blue-700 shrink-0">{step}</span>
+                    <Icon size={18} className="text-blue-500 group-hover:text-blue-700 transition-colors" />
                   </div>
-                  <div className="text-sm font-bold text-slate-900 mb-2 group-hover:text-blue-700 transition-colors">{label}</div>
-                  <div className="text-xs text-gray-500 leading-relaxed">{desc}</div>
+                  <div className="text-base font-bold text-slate-900 mb-3 group-hover:text-blue-700 transition-colors">{label}</div>
+                  <div className="text-sm text-gray-500 leading-relaxed flex-1">{desc}</div>
+                  <div className="mt-4 flex items-center gap-1 text-xs font-semibold text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                    Explore <ArrowRight size={11} />
+                  </div>
                 </Link>
               </motion.div>
             ))}

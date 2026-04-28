@@ -15,7 +15,7 @@ export default function App() {
   const showFilter = DATA_ROUTES.some(r => location.pathname.startsWith(r))
 
   return (
-    <div className="min-h-screen bg-slate-950 font-sans">
+    <div className="min-h-screen bg-white font-sans">
       <Navbar />
       {showFilter && <FilterBar />}
       <main>

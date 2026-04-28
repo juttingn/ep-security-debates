@@ -37,10 +37,9 @@ function WordCloud({ onSelectCluster, selectedCluster }) {
             className="cursor-pointer transition-all select-none"
             style={{
               fontSize: termSize(count),
-              color: f?.color ?? '#94a3b8',
-              opacity: selectedCluster && !isSelected ? 0.3 : 1,
+              color: f?.color ?? '#6b7280',
+              opacity: selectedCluster !== null && !isSelected ? 0.25 : 1,
               fontWeight: count > 400 ? 700 : count > 200 ? 600 : 500,
-              textShadow: isSelected ? `0 0 12px ${f?.color}88` : 'none',
             }}
             title={`Cluster: ${cluster?.label ?? frameId} (n=${count})\nFrame: ${f?.label}`}
           >
@@ -69,32 +68,25 @@ export default function TopicModel() {
         />
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <StatCard value="2"       label="Model variants (ML / EN)"     color="text-blue-400"    delay={0}    />
-          <StatCard value="50+"     label="BERTopic clusters identified"  color="text-amber-400"   delay={0.05} />
-          <StatCard value="19,859"  label="Speeches in the corpus"        color="text-emerald-400" delay={0.1}  />
-          <StatCard value="Topic 16" label="Excluded — Maltese (distorts multilingual model)" color="text-red-400" delay={0.15} />
+          <StatCard value="2"        label="Model variants (ML / EN)"                             color="text-blue-600"   delay={0}    />
+          <StatCard value="50+"      label="BERTopic clusters identified"                         color="text-amber-600"  delay={0.05} />
+          <StatCard value="19,859"   label="Speeches in the corpus"                               color="text-emerald-600" delay={0.1} />
+          <StatCard value="Topic 16" label="Excluded — Maltese (distorts multilingual model)"     color="text-red-600"    delay={0.15} />
         </div>
 
         {/* Word cloud */}
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="card p-6">
-          <div className="flex items-start justify-between mb-4">
-            <div>
-              <h3 className="text-sm font-semibold text-white">Security-Relevant BERTopic Terms</h3>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Word size reflects cluster document count (larger = more speeches in that cluster).
-                Colour indicates the security frame the cluster validates. Click a term to inspect its cluster.
-              </p>
-            </div>
-          </div>
-
+          <h3 className="text-sm font-semibold text-slate-900 mb-1">Security-Relevant BERTopic Terms</h3>
+          <p className="text-xs text-gray-500 mb-4">
+            Word size reflects cluster document count (larger = more speeches in that cluster).
+            Colour indicates the security frame the cluster validates. Click a term to inspect its cluster.
+          </p>
           <WordCloud onSelectCluster={setSelectedClusterId} selectedCluster={selectedClusterId} />
-
-          {/* Frame colour legend */}
-          <div className="flex flex-wrap gap-x-4 gap-y-1.5 mt-4 pt-4 border-t border-slate-800">
+          <div className="flex flex-wrap gap-x-4 gap-y-1.5 mt-4 pt-4 border-t border-gray-100">
             {FRAMES.filter(f => f.id !== 'institutional_procedural').map(f => (
               <div key={f.id} className="flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: f.color }} />
-                <span className="text-[10px] text-slate-500">{f.label}</span>
+                <span className="text-[10px] text-gray-500">{f.label}</span>
               </div>
             ))}
           </div>
@@ -102,15 +94,15 @@ export default function TopicModel() {
 
         {/* Selected cluster detail */}
         {selectedCluster ? (
-          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="card p-5 border-blue-700/40">
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="card p-5 border-blue-300">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-bold text-blue-300">
+              <h3 className="text-sm font-bold text-blue-700">
                 Topic {selectedCluster.id}: {selectedCluster.label}
-                <span className="ml-2 text-xs font-normal text-slate-500">{selectedCluster.count.toLocaleString()} speeches</span>
+                <span className="ml-2 text-xs font-normal text-gray-400">{selectedCluster.count.toLocaleString()} speeches</span>
               </h3>
-              <button onClick={() => setSelectedClusterId(null)} className="text-xs text-slate-600 hover:text-slate-400">✕ close</button>
+              <button onClick={() => setSelectedClusterId(null)} className="text-xs text-gray-400 hover:text-gray-600">✕ close</button>
             </div>
-            <p className="text-xs text-slate-500 mb-3">Top representative terms from the BERTopic model</p>
+            <p className="text-xs text-gray-500 mb-3">Top representative terms from the BERTopic model</p>
             <div className="flex flex-wrap gap-2 mb-4">
               {selectedCluster.terms.map((t, i) => {
                 const f = FRAME_MAP[selectedCluster.frames[0]]
@@ -126,7 +118,7 @@ export default function TopicModel() {
               {selectedCluster.frames.map(fid => {
                 const f = FRAME_MAP[fid]
                 return (
-                  <span key={fid} className="flex items-center gap-1.5 text-xs text-slate-300 bg-slate-800 px-2.5 py-1 rounded-full">
+                  <span key={fid} className="flex items-center gap-1.5 text-xs text-gray-700 bg-gray-100 px-2.5 py-1 rounded-full">
                     <span className="w-2 h-2 rounded-full" style={{ background: f?.color }} />
                     → {f?.label}
                   </span>
@@ -135,31 +127,31 @@ export default function TopicModel() {
             </div>
           </motion.div>
         ) : (
-          <div className="text-center text-xs text-slate-600 py-4">← Click a term in the word cloud to inspect its BERTopic cluster</div>
+          <div className="text-center text-xs text-gray-400 py-4">← Click a term in the word cloud to inspect its BERTopic cluster</div>
         )}
 
         {/* Cluster table */}
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="card p-5 overflow-x-auto">
-          <h3 className="text-sm font-semibold text-white mb-1">All Displayed Clusters</h3>
-          <p className="text-xs text-slate-500 mb-4">Ordered by document count. Topic -1 (outliers) and Topic 16 (Maltese) excluded.</p>
+          <h3 className="text-sm font-semibold text-slate-900 mb-1">All Displayed Clusters</h3>
+          <p className="text-xs text-gray-500 mb-4">Ordered by document count. Topic -1 (outliers) and Topic 16 (Maltese) excluded.</p>
           <table className="w-full text-xs min-w-[580px]">
             <thead>
-              <tr className="text-slate-500 text-[10px] uppercase tracking-wider border-b border-slate-800">
+              <tr className="text-gray-400 text-[10px] uppercase tracking-wider border-b border-gray-200">
                 <th className="text-left py-2 pr-4 font-normal">ID</th>
                 <th className="text-left py-2 pr-4 font-normal">Cluster label</th>
                 <th className="text-right py-2 pr-4 font-normal">Speeches</th>
                 <th className="text-left py-2 font-normal">Linked frame(s)</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60">
+            <tbody className="divide-y divide-gray-100">
               {BERTOPIC_CLUSTERS.map(c => (
                 <tr key={c.id}
-                  className={`cursor-pointer transition-colors hover:bg-slate-800/40 ${selectedClusterId === c.id ? 'bg-slate-800/60' : ''}`}
+                  className={`cursor-pointer transition-colors hover:bg-gray-50 ${selectedClusterId === c.id ? 'bg-blue-50' : ''}`}
                   onClick={() => setSelectedClusterId(selectedClusterId === c.id ? null : c.id)}
                 >
-                  <td className="py-1.5 pr-4 text-slate-600 font-mono">{c.id}</td>
-                  <td className="py-1.5 pr-4 text-slate-300">{c.label}</td>
-                  <td className="py-1.5 pr-4 text-right text-slate-400 font-mono">{c.count.toLocaleString()}</td>
+                  <td className="py-1.5 pr-4 text-gray-400 font-mono">{c.id}</td>
+                  <td className="py-1.5 pr-4 text-gray-700">{c.label}</td>
+                  <td className="py-1.5 pr-4 text-right text-gray-500 font-mono">{c.count.toLocaleString()}</td>
                   <td className="py-1.5">
                     <div className="flex flex-wrap gap-1">
                       {c.frames.map(fid => {
@@ -181,22 +173,23 @@ export default function TopicModel() {
 
         {/* Methodology */}
         <div className="card p-6">
-          <h2 className="text-base font-bold text-white mb-4">How BERTopic Informed Frame Selection</h2>
-          <div className="grid sm:grid-cols-2 gap-5 text-xs text-slate-400">
+          <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 mb-1">Methodology</p>
+          <h2 className="text-base font-bold text-slate-900 mb-4">How BERTopic Informed Frame Selection</h2>
+          <div className="grid sm:grid-cols-2 gap-5 text-xs text-gray-600">
             <div>
-              <div className="text-slate-200 font-semibold mb-1">Role in the pipeline</div>
-              <p className="leading-relaxed">BERTopic was used inductively to <em className="text-slate-300">validate and expand</em> security frames from the literature — not for hypothesis formulation. The model became unstable when given more than 30 words per hypothesis, so it was kept at the cluster-discovery stage only.</p>
+              <div className="text-slate-900 font-semibold mb-1">Role in the pipeline</div>
+              <p className="leading-relaxed">BERTopic was used inductively to <em className="text-gray-800">validate and expand</em> security frames from the literature — not for hypothesis formulation. The model became unstable when given more than 30 words per hypothesis, so it was kept at the cluster-discovery stage only.</p>
             </div>
             <div>
-              <div className="text-slate-200 font-semibold mb-1">Model details</div>
+              <div className="text-slate-900 font-semibold mb-1">Model details</div>
               <p className="leading-relaxed">Sentence-transformer embeddings → UMAP dimensionality reduction → HDBSCAN clustering → c-TF-IDF topic representation. Two variants: (a) English-translated speeches, (b) multilingual pooled speeches. ML variant is the main specification.</p>
             </div>
             <div>
-              <div className="text-slate-200 font-semibold mb-1">What the clusters showed</div>
+              <div className="text-slate-900 font-semibold mb-1">What the clusters showed</div>
               <p className="leading-relaxed">The top 20 clusters are dominated by Defence/Military, Economic security, and Energy — broadly confirming the expected securitisation hierarchy in EP9–10. Smaller but distinct clusters validated the addition of Organised Crime, Food Security, Gender-Based Violence, and Foreign Information Interference as independent frames.</p>
             </div>
             <div>
-              <div className="text-slate-200 font-semibold mb-1">Frame refinement examples</div>
+              <div className="text-slate-900 font-semibold mb-1">Frame refinement examples</div>
               <ul className="leading-relaxed space-y-1 list-disc list-inside">
                 <li>Topic 43 (crime_organised) → added Organised Crime as distinct political security risk</li>
                 <li>Topics 3 & 12 (women_gender, iran_women) → added Gender-Based Violence</li>
