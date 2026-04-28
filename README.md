@@ -330,7 +330,7 @@ Frames covered (13 security frames): `military_defence`, `border_migration`, `te
 
 ## LLM Classification (`classify_frames_llm.py`)
 
-Optional second-stage classification of security paragraphs on three analytical dimensions, using the Claude API (Claude Haiku 4.5).
+The code for this second-stage classification of security paragraphs on three analytical dimensions, using the Claude API (Claude Haiku 4.5), is shared but was not run by the team as it meant paying an extra cost. 
 
 ### Questions
 
@@ -344,6 +344,7 @@ Optional second-stage classification of security paragraphs on three analytical 
 
 - Restricted to **security paragraphs only** (`not_security` excluded) from **2023–2025**: ~36,879 paragraphs
 - Non-security paragraphs and earlier years excluded by default
+
 
 
 ### Step 7 — Interactive website ([live site](https://juttingn.github.io/ep-security-debates/) · [`09_website/`](09_website/))
