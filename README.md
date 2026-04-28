@@ -178,7 +178,175 @@ choices:
 The multi-label paragraph specification is the preferred and reported
 specification.
 
-### Step 6 — Interactive website ([live site](https://juttingn.github.io/ep-security-debates/) · [`09_website/`](09_website/))
+### Step 6 — Data enriched with speaker metadata (country, political orientation) for comparative analysis 
+
+## Files
+
+| File | Description |
+|---|---|
+| `corpus_ep_security_CLEAN.xlsx` | Raw EP debate corpus, cleaned |
+| `corpus_ep_security_ENRICHED.xlsx` | Corpus with `country` and `political_orientation` columns added (speech-level) |
+| `frames_classified_para_ML.csv` | ML frame classification output — paragraph-level, one row per paragraph |
+| `frames_classified_para_ML_enriched.csv` | **Main analysis file** — paragraph-level with `country` and `political_orientation` added |
+| `frames_classified_para_ML_enriched.xlsx` | Same as above, Excel format for visualization |
+| `country_cache.json` | Local cache of MEP name → country, retrieved from the EP Open Data API |
+| `enrich_ep_data.py` | Script that fetches MEP citizenship from the EP API and builds `country_cache.json` |
+| `write_columns.py` | Script that writes `country` and `political_orientation` into the ENRICHED Excel file |
+| `enrich_frames_csv.py` | **Main enrichment script** — adds country and orientation to the paragraph-level CSV |
+
+---
+
+## Enrichment Logic (`enrich_frames_csv.py`)
+
+### Country
+Resolution follows this priority order:
+
+1. **Manual patch** (`MANUAL_COUNTRY` dict) — takes absolute priority, covers encoding-corrupted MEP names, identified institutional speakers, and rapporteurs.
+2. **Fuzzy-match recovery** — before the main cache lookup, cache entries with empty country values are matched against resolved entries using normalised ASCII comparison (threshold: 85% via `difflib`). Recovered 4 additional MEPs (e.g. `Viola Von Cramon—Taubadel` → Germany).
+3. **Cache lookup** — `country_cache.json`, built from the EP Open Data API, maps MEP names to their citizenship country.
+4. **EU body group fallback** — if political_group is Commission, Council, EP President, Other EU Body, or ITRE → `"European Bodies"`.
+5. **Rapporteur/Author fallback** — if speaker_type is Rapporteur/Author and still unresolved → `"Rapporteur/Author"`.
+6. **Garbled entries** — speaker names that are sentence fragments or titles (e.g. "Le Président", "Elnök asszony") → `"N/A"`.
+
+### Political Orientation
+Resolution follows the same priority order:
+
+1. **Manual patch** (`MANUAL_ORIENTATION` dict) — covers speakers with NaN political_group.
+2. **Group lookup** — mapped from the `political_group` column:
+
+| Political Group | Orientation |
+|---|---|
+| GUE/NGL, The Left | Far-Left |
+| Verts/ALE, S&D | Left |
+| Renew | Center |
+| PPE, ECR | Right |
+| ID, PfE, ESN, Patriots | Far-Right |
+| Commission, Council, EP President, Other EU Body, ITRE | European Bodies |
+| NI (Non-Inscrits) | NI |
+
+3. **Rapporteur/Author fallback** — if speaker_type is Rapporteur/Author and group is unknown → `"Rapporteur/Author"`.
+4. **Garbled entries** → `"N/A"`.
+
+> **Note on ECR:** Classified as "Right" following the original script convention. Some literature places ECR closer to Far-Right; adjust as needed for your analysis.
+
+### Speaker categories used in both columns
+
+| Label | Who |
+|---|---|
+| `"European Bodies"` | EU institutional speakers: Commission, Council, EP President, EU Ombudsman, ECB President, EU Committee of the Regions President, etc. |
+| `"Other Institutional Speaker"` | Heads of state, prime ministers, foreign dignitaries, and invited non-EU public figures (e.g. Zelenskyy, Tusk, Mitsotakis, Trudeau, Baerbock) |
+| `"Rapporteur/Author"` | Speakers labeled as Rapporteur/Author whose political group is unknown |
+| `"NI"` | Non-Inscrits MEPs (no group affiliation) |
+| `"N/A"` | Garbled entries, sentence fragments, or genuinely unresolvable speakers |
+
+---
+
+## Coverage (paragraph-level, 78,041 rows)
+
+| Column | Resolved | N/A |
+|---|---|---|
+| `country` | 77,839 (99.7%) | 202 (0.3%) |
+| `political_orientation` | 76,634 (98.2%) | 1,407 (1.8%) |
+
+The 202 remaining `N/A` country rows are all MEPs whose names could not be resolved by the EP API at cache-build time and were not recoverable by fuzzy matching.
+
+### Political orientation distribution
+
+| Orientation | Rows |
+|---|---|
+| European Bodies | 24,529 |
+| Right | 15,984 |
+| Left | 12,133 |
+| Rapporteur/Author | 6,564 |
+| Center | 5,642 |
+| Far-Right | 4,359 |
+| Far-Left | 3,672 |
+| Other Institutional Speaker | 2,251 |
+| NI | 1,500 |
+| N/A | 1,407 |
+
+---
+
+## Frame Scores
+
+Each paragraph receives a continuous score (0–1) for 13 security frames:
+
+`military_defence`, `border_migration`, `terrorism`, `organised_crime`, `cyber`, `foreign_information_interference`, `energy`, `economic`, `environmental`, `health`, `gender_based_violence`, `food_security`, `institutional_procedural`
+
+- `sector_frame_top1`: the dominant frame (highest score)
+- `sector_frame_top1_score`: its score
+- `sector_frames_multi`: all frames with score > 0.4 (multi-frame paragraphs)
+
+---
+
+## Aggregated Data Files (`aggregate_frames.py`)
+
+Four Excel files are produced for analysis and visualization, all aggregated at **country × year** or **political orientation × year** level. Special labels (European Bodies, Other Institutional Speaker, Rapporteur/Author, N/A) are excluded from both aggregations.
+
+| File | Grouping | Logic |
+|---|---|---|
+| `aggregated_country_year_topframe.xlsx` | Country × Year | Count of paragraphs where each frame is `sector_frame_top1` |
+| `aggregated_country_year_multiframe.xlsx` | Country × Year | Count of paragraphs where each frame appears in `sector_frames_multi` (score > 0.4) |
+| `aggregated_orientation_year_topframe.xlsx` | Political Orientation × Year | Same as above, grouped by orientation |
+| `aggregated_orientation_year_multiframe.xlsx` | Political Orientation × Year | Same as above, grouped by orientation |
+
+Each file contains:
+- `total_paragraphs` — total paragraphs in that group × year cell
+- One **count column** per frame (e.g. `military_defence`)
+- One **percentage column** per frame (e.g. `pct_military_defence`) — count / total_paragraphs × 100
+
+Frames covered (13 security frames): `military_defence`, `border_migration`, `terrorism`, `organised_crime`, `cyber`, `foreign_information_interference`, `energy`, `economic`, `environmental`, `health`, `gender_based_violence`, `food_security`, `institutional_procedural`
+
+> **`not_security` exclusion:** The ML model assigns a `not_security` label to paragraphs that, despite belonging to a security speech (speech-level filter), are not themselves about security. These paragraphs are excluded from **both numerator and denominator** in all four aggregated files. This means `total_paragraphs` reflects only security-classified paragraphs, giving an unbiased baseline for frame proportions. 15,692 paragraphs (20.1%) were excluded on this basis.
+
+> Note: in multi-frame files, a single paragraph can contribute to multiple frame columns, so counts do not sum to `total_paragraphs`.
+
+### Coverage after filtering
+
+| Subset | Rows (security only) | Groups |
+|---|---|---|
+| Country subset | 49,373 | 44 countries |
+| Orientation subset | 38,253 | 6 orientations (Far-Left, Left, Center, Right, Far-Right, NI) |
+
+### Top frame distribution (country subset, security paragraphs only)
+
+| Frame | Paragraphs |
+|---|---|
+| economic | 21,811 |
+| military_defence | 8,075 |
+| energy | 6,401 |
+| border_migration | 5,520 |
+| terrorism | 4,897 |
+| health | 691 |
+| gender_based_violence | 501 |
+| foreign_information_interference | 361 |
+| organised_crime | 279 |
+| environmental | 234 |
+| institutional_procedural | 209 |
+| cyber | 200 |
+| food_security | 194 |
+
+---
+
+## LLM Classification (`classify_frames_llm.py`)
+
+Optional second-stage classification of security paragraphs on three analytical dimensions, using the Claude API (Claude Haiku 4.5).
+
+### Questions
+
+| Column | Question | Labels |
+|---|---|---|
+| `threat_actor` | What type of threat actor, if any, is named or clearly referenced? | `External state actor` / `External non-state actor` / `Internal actor` / `No specific actor` |
+| `responsibility` | At what level is security responsibility located (normative framing)? | `EU level` / `Member-state level` / `Shared` / `Not specified` |
+| `tone` | What is the dominant tone of the paragraph? | `Urgent/Alarmist` / `Concerned/Assertive` / `Measured/Deliberative` |
+
+### Scope
+
+- Restricted to **security paragraphs only** (`not_security` excluded) from **2023–2025**: ~36,879 paragraphs
+- Non-security paragraphs and earlier years excluded by default
+
+
+### Step 7 — Interactive website ([live site](https://juttingn.github.io/ep-security-debates/) · [`09_website/`](09_website/))
 
 A React + Recharts application lets users explore the annotated corpus:
 
