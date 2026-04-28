@@ -1,8 +1,8 @@
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, RadarChart, Radar, PolarGrid, PolarAngleAxis, LineChart, Line, Legend } from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, RadarChart, Radar, PolarGrid, PolarAngleAxis } from 'recharts'
 import { Globe, Users, X, Search } from 'lucide-react'
-import { COUNTRIES, ORIENTATION_TOTALS, ORIENTATIONS, FRAMES, COUNTRY_YEAR, ORIENTATION_YEAR } from '../data/placeholder'
+import { COUNTRIES, ORIENTATION_TOTALS, ORIENTATIONS, FRAMES } from '../data/placeholder'
 import { PageHeader } from '../components/ui'
 
 const PT = ({ children }) => (
@@ -27,18 +27,6 @@ function radarData(row, total) {
     .map(f => ({ subject: f.shortLabel, value: +((row[f.id] / total) * 100).toFixed(1) }))
 }
 
-const TOP_N_TREND = 5
-
-function trendData(name, isCountry, topFrameIds) {
-  const src = isCountry ? COUNTRY_YEAR[name] : ORIENTATION_YEAR[name]
-  if (!src) return []
-  return src.map(row => {
-    const obj = { year: row.year }
-    topFrameIds.forEach(id => { obj[id] = row[id] ?? 0 })
-    return obj
-  })
-}
-
 function ProfilePanel({ entity, color, onClose }) {
   const isCountry = 'country' in entity
   const name  = isCountry ? entity.country : entity.orientation
@@ -47,8 +35,6 @@ function ProfilePanel({ entity, color, onClose }) {
   const bars  = frameProfile(entity, total)
   const radar = radarData(entity, total)
   const topFrame = bars[0]
-  const topFrameIds = bars.slice(0, TOP_N_TREND).map(b => b.id)
-  const trend = trendData(name, isCountry, topFrameIds)
 
   return (
     <motion.div
@@ -113,31 +99,6 @@ function ProfilePanel({ entity, color, onClose }) {
           </ResponsiveContainer>
         </div>
       </div>
-
-      {trend.length > 0 && (
-        <div className="px-5 pb-5 border-t border-slate-800 pt-4">
-          <h3 className="text-sm font-semibold text-white mb-1">Top-5 Frame Trends (2019–2026)</h3>
-          <p className="text-[10px] text-slate-500 mb-3">Multi-label % of security paragraphs assigned each frame, by year.</p>
-          <ResponsiveContainer width="100%" height={200}>
-            <LineChart data={trend} margin={{ top: 4, right: 16, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="year" tick={{ fill: '#94a3b8', fontSize: 9 }} tickLine={false} axisLine={false} />
-              <YAxis tick={{ fill: '#94a3b8', fontSize: 9 }} tickLine={false} axisLine={false} tickFormatter={v => `${v}%`} width={32} />
-              <Tooltip
-                contentStyle={{ background: '#0f172a', border: '1px solid #334155', borderRadius: 8, fontSize: 11 }}
-                labelStyle={{ color: '#94a3b8' }}
-                formatter={(v, n) => [`${v}%`, FRAME_MAP[n]?.shortLabel ?? n]}
-              />
-              <Legend iconType="circle" iconSize={7} wrapperStyle={{ fontSize: 9, color: '#94a3b8' }}
-                formatter={n => FRAME_MAP[n]?.shortLabel ?? n} />
-              {topFrameIds.map(id => (
-                <Line key={id} type="monotone" dataKey={id} stroke={FRAME_MAP[id]?.color ?? '#64748b'}
-                  strokeWidth={1.5} dot={{ r: 2 }} activeDot={{ r: 4 }} />
-              ))}
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      )}
     </motion.div>
   )
 }
