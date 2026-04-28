@@ -76,6 +76,16 @@ EP_Corpus_FINAL.R                           ← encoding fix, cleaning, language
         ↓
 04_robustness_checks.py                      ← translation + granularity correlation checks  [Google Drive]
         ↓
+enrich_ep_data.py                            ← fetches MEP citizenship from the EP API + builds country_cache.json
+        ↓
+write_columns.py`                            ← writes `country` + `political_orientation` into the ENRICHED Excel file
+        ↓
+ enrich_frames_csv.py                        ← adds country and orientation to the paragraph-level CSV 
+        ↓
+aggregate_frames.py                          ← creates aggregated tables for final analysis on country + political wing  
+        ↓
+classify_frames_llm                          ← second-stage classification of security paragraphs -> three questions
+        ↓
 09_website/                                  ← React + Recharts interactive explorer  [in repo]
 ```
 
