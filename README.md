@@ -100,15 +100,13 @@ across EP9 and EP10 (accounting for group renames, e.g. ID → PfE). The unit
 of analysis is the **paragraph** (blank-line delimited, minimum 450 characters;
 shorter units are merged with the next).
 
-An optional translation step (`00_translate.py`, Google Drive) produces an English version of
-all speeches for the translation robustness check.
+An optional translation step ([`00_translate.py`](https://drive.google.com/drive/folders/1oUIqaypIW2Cz_0lZ4P3UhrYXNlsLfdko), Google Drive) produces an English version of all speeches for the translation robustness check.
 
 ### Step 3 — Topic modelling (BERTopic)
 
 With no prior assumptions about what "security" encompasses, BERTopic maps the
 latent topical structure of security-filtered speeches using sentence-transformer
-embeddings → UMAP → HDBSCAN. Two variants were run: (a) multilingual (`02b_bertopic_multilingual.py`,
-source language), (b) English-translated (`02a_bertopic_english.py`). The multilingual variant is
+embeddings → UMAP → HDBSCAN. Two variants were run: (a) multilingual ([`02b_bertopic_multilingual.py`](https://drive.google.com/drive/folders/1oUIqaypIW2Cz_0lZ4P3UhrYXNlsLfdko), source language), (b) English-translated ([`02a_bertopic_english.py`](https://drive.google.com/drive/folders/1oUIqaypIW2Cz_0lZ4P3UhrYXNlsLfdko)). The multilingual variant is
 the main specification. 53 coherent topics were identified; Topic -1 (outlier
 noise) and Topic 16 (Maltese-dominated, distorts ML model) were excluded.
 
@@ -163,7 +161,7 @@ choices:
 The multi-label paragraph specification is the preferred and reported
 specification.
 
-### Step 6 — Interactive website (`09_website/`)
+### Step 6 — Interactive website ([`09_website/`](09_website/))
 
 A React + Recharts application lets users explore the annotated corpus:
 
