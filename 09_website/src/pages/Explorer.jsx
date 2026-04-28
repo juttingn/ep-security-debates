@@ -9,7 +9,7 @@ import { Globe, Users, X, Search, ChevronLeft, ChevronRight } from 'lucide-react
 import { COUNTRIES, ORIENTATION_TOTALS, ORIENTATIONS, FRAMES, CY_MULTI } from '../data/placeholder'
 import { PageHeader } from '../components/ui'
 
-const GEO_URL = '/world-110m.json'
+const GEO_URL = `${import.meta.env.BASE_URL}world-110m.json`
 
 // ISO 3166-1 numeric → country name (our 28 delegations)
 const ISO_TO_COUNTRY = {
