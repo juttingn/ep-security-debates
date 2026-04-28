@@ -58,6 +58,10 @@ The classification scripts live on [Google Drive](https://drive.google.com/drive
 ```
 EP_Security_Debates_Scraper (22April).R     ← scrape EP plenary records  [in repo]
         ↓
+   corpus_ep_security.xlsm
+        ↓
+EP_Corpus_FINAL.R                           ← encoding fix, cleaning, language detection  [in repo]
+        ↓
    corpus_ep_security_CLEAN.xlsx
         ↓
 00_translate.py                              ← optional EN translation for robustness  [Google Drive]
@@ -92,13 +96,26 @@ EP9 (July 2019–June 2024) and EP10 (July 2024–early 2026).
 Speeches are pre-filtered for security-relevant keywords before paragraph
 segmentation.
 
-### Step 2 — Corpus preparation & translation
+### Step 2 — Corpus cleaning ([`EP_Corpus_FINAL.R`](EP_Corpus_FINAL.R))
 
-Raw data is cleaned, deduplicated, and exported. Language detection identifies
-non-English interventions. Speaker role and political group are normalised
-across EP9 and EP10 (accounting for group renames, e.g. ID → PfE). The unit
-of analysis is the **paragraph** (blank-line delimited, minimum 450 characters;
-shorter units are merged with the next).
+The raw corpus (`corpus_ep_security.xlsm`) required extensive cleaning before
+analysis. `EP_Corpus_FINAL.R` handles this in a single top-to-bottom run:
+
+- **Encoding repair** — the scraper read HTML UTF-8 bytes as Mac Roman,
+  garbling accented characters across all 24 EU languages. A direct character
+  substitution table (~130 mappings) corrects double- and triple-corrupted
+  sequences without calling `iconv()`.
+- **Speaker name & group normalisation** — standardises names, removes role
+  prefixes, and maps EP political group labels consistently across EP9 and EP10
+  (e.g. ID → PfE).
+- **Language detection** — uses `cld3` to detect the true language of each
+  speech from text content (the metadata field was unreliable). ~8% of speeches
+  are non-English and were later translated for the translation robustness check.
+
+Outputs `corpus_ep_security_CLEAN.xlsx` (text truncated to Excel's 32,767-char
+limit) and `corpus_ep_security_CLEAN.csv` (full text). The unit of analysis is
+the **paragraph** (blank-line delimited, minimum 450 characters; shorter units
+are merged with the next).
 
 An optional translation step ([`00_translate.py`](https://drive.google.com/drive/folders/1oUIqaypIW2Cz_0lZ4P3UhrYXNlsLfdko), Google Drive) produces an English version of all speeches for the translation robustness check.
 
@@ -177,6 +194,7 @@ A React + Recharts application lets users explore the annotated corpus:
 | File | Description |
 |---|---|
 | [`EP_Security_Debates_Scraper (22April).R`](EP_Security_Debates_Scraper%20(22April).R) | Scraper: EP plenary records (R / rvest) |
+| [`EP_Corpus_FINAL.R`](EP_Corpus_FINAL.R) | Corpus cleaning: encoding repair, speaker/group normalisation, language detection (R / tidyverse, cld3) |
 | [`security_framing_classification_pipeline.ipynb`](security_framing_classification_pipeline.ipynb) | Classification notebook (Colab) |
 | [`README_classification_pipeline.md`](README_classification_pipeline.md) | Full pipeline file layout and Google Drive structure |
 | [`09_website/`](09_website/) | React + Recharts interactive explorer |
@@ -190,8 +208,8 @@ data files live on Google Drive:
 
 ## Environment
 
-**R** (scraping):
-Required packages: `rvest`, `dplyr`, `tidyr`, `readr`, `stringr`
+**R** (scraping and corpus cleaning):
+Required packages: `rvest`, `tidyverse`, `readxl`, `writexl`, `cld3`, `stringi`
 
 **Python** (3.10+, classification pipeline):
 ```bash
@@ -218,6 +236,7 @@ npm run build    # production build → dist/
 | Victoria Koch | [@victoriackoch](https://github.com/victoriackoch) |
 | Natalia F. | [@nataliaf01](https://github.com/nataliaf01) |
 | Michal K. | [@michalkolb01](https://github.com/michalkolb01) |
+| Chiara K. | [@chiarakahler](https://github.com/chiarakahler) |
 
 ---
 
