@@ -190,7 +190,7 @@ specification.
 
 ### Step 6 — Data enriched with speaker metadata (country, political orientation) for comparative analysis 
 
-## Files
+#### Files
 
 | File | Description |
 |---|---|
@@ -206,9 +206,9 @@ specification.
 
 ---
 
-## Enrichment Logic (`enrich_frames_csv.py`)
+#### Enrichment Logic (`enrich_frames_csv.py`)
 
-### Country
+#### Country
 Resolution follows this priority order:
 
 1. **Manual patch** (`MANUAL_COUNTRY` dict) — takes absolute priority, covers encoding-corrupted MEP names, identified institutional speakers, and rapporteurs.
@@ -218,7 +218,7 @@ Resolution follows this priority order:
 5. **Rapporteur/Author fallback** — if speaker_type is Rapporteur/Author and still unresolved → `"Rapporteur/Author"`.
 6. **Garbled entries** — speaker names that are sentence fragments or titles (e.g. "Le Président", "Elnök asszony") → `"N/A"`.
 
-### Political Orientation
+#### Political Orientation
 Resolution follows the same priority order:
 
 1. **Manual patch** (`MANUAL_ORIENTATION` dict) — covers speakers with NaN political_group.
@@ -239,7 +239,7 @@ Resolution follows the same priority order:
 
 > **Note on ECR:** Classified as "Right" following the original script convention. Some literature places ECR closer to Far-Right; adjust as needed for your analysis.
 
-### Speaker categories used in both columns
+#### Speaker categories used in both columns
 
 | Label | Who |
 |---|---|
@@ -251,7 +251,7 @@ Resolution follows the same priority order:
 
 ---
 
-## Coverage (paragraph-level, 78,041 rows)
+#### Coverage (paragraph-level, 78,041 rows)
 
 | Column | Resolved | N/A |
 |---|---|---|
@@ -260,7 +260,7 @@ Resolution follows the same priority order:
 
 The 202 remaining `N/A` country rows are all MEPs whose names could not be resolved by the EP API at cache-build time and were not recoverable by fuzzy matching.
 
-### Political orientation distribution
+#### Political orientation distribution
 
 | Orientation | Rows |
 |---|---|
@@ -277,7 +277,7 @@ The 202 remaining `N/A` country rows are all MEPs whose names could not be resol
 
 ---
 
-## Frame Scores
+#### Frame Scores
 
 Each paragraph receives a continuous score (0–1) for 13 security frames:
 
@@ -289,7 +289,7 @@ Each paragraph receives a continuous score (0–1) for 13 security frames:
 
 ---
 
-## Aggregated Data Files (`aggregate_frames.py`)
+#### Aggregated Data Files (`aggregate_frames.py`)
 
 Four Excel files are produced for analysis and visualization, all aggregated at **country × year** or **political orientation × year** level. Special labels (European Bodies, Other Institutional Speaker, Rapporteur/Author, N/A) are excluded from both aggregations.
 
@@ -311,14 +311,14 @@ Frames covered (13 security frames): `military_defence`, `border_migration`, `te
 
 > Note: in multi-frame files, a single paragraph can contribute to multiple frame columns, so counts do not sum to `total_paragraphs`.
 
-### Coverage after filtering
+#### Coverage after filtering
 
 | Subset | Rows (security only) | Groups |
 |---|---|---|
 | Country subset | 49,373 | 44 countries |
 | Orientation subset | 38,253 | 6 orientations (Far-Left, Left, Center, Right, Far-Right, NI) |
 
-### Top frame distribution (country subset, security paragraphs only)
+#### Top frame distribution (country subset, security paragraphs only)
 
 | Frame | Paragraphs |
 |---|---|
@@ -337,12 +337,11 @@ Frames covered (13 security frames): `military_defence`, `border_migration`, `te
 | food_security | 194 |
 
 ---
-
-## LLM Classification (`classify_frames_llm.py`)
+### Step 7 — LLM Classification (`classify_frames_llm.py`)
 
 The code for this second-stage classification of security paragraphs on three analytical dimensions, using the Claude API (Claude Haiku 4.5), is shared but was not run by the team as it meant paying an extra cost. 
 
-### Questions
+#### Questions
 
 | Column | Question | Labels |
 |---|---|---|
@@ -350,14 +349,14 @@ The code for this second-stage classification of security paragraphs on three an
 | `responsibility` | At what level is security responsibility located (normative framing)? | `EU level` / `Member-state level` / `Shared` / `Not specified` |
 | `tone` | What is the dominant tone of the paragraph? | `Urgent/Alarmist` / `Concerned/Assertive` / `Measured/Deliberative` |
 
-### Scope
+#### Scope
 
 - Restricted to **security paragraphs only** (`not_security` excluded) from **2023–2025**: ~36,879 paragraphs
 - Non-security paragraphs and earlier years excluded by default
 
 
 
-### Step 7 — Interactive website ([live site](https://juttingn.github.io/ep-security-debates/) · [`09_website/`](09_website/))
+### Step 8 — Interactive website ([live site](https://juttingn.github.io/ep-security-debates/) · [`09_website/`](09_website/))
 
 A React + Recharts application lets users explore the annotated corpus:
 
